@@ -14,3 +14,8 @@ export function formatDisplayName(raw: string): string {
     })
     .join(' ');
 }
+
+/** True se, após normalização, o nome tem pelo menos um caractere (rejeita só espaços). */
+export function isNonEmptyDisplayName(raw: string): boolean {
+  return formatDisplayName(raw).length > 0;
+}

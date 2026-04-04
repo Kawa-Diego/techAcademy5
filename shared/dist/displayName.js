@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.formatDisplayName = formatDisplayName;
+exports.isNonEmptyDisplayName = isNonEmptyDisplayName;
 /**
  * Nome para exibição: primeira letra de cada palavra em maiúscula (ex.: "John Deep").
  * Usa regras de capitalização do locale pt-BR.
@@ -17,4 +18,8 @@ function formatDisplayName(raw) {
         return lower.charAt(0).toLocaleUpperCase('pt-BR') + lower.slice(1);
     })
         .join(' ');
+}
+/** True se, após normalização, o nome tem pelo menos um caractere (rejeita só espaços). */
+function isNonEmptyDisplayName(raw) {
+    return formatDisplayName(raw).length > 0;
 }
