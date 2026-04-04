@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+*.log
+prisma/
+prisma/*.db
+prisma/*.db-journal
+uploads/
+docker-compose.yml
+Dockerfile
+.env.example
+build_error.log

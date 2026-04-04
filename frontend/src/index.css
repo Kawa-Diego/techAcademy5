@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+/*
+  Um único eixo de rolagem vertical: evita html e body rolarem ao mesmo tempo
+  (duas barras à direita). O body é o contêiner de scroll; html fica fixo em altura.
+*/
+@layer base {
+  html {
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #root {
+    min-height: 100%;
+  }
+}
+
+@layer components {
+  /* Área logada: fundo escuro fosco + texto claro em títulos de página */
+  .app-shell {
+    @apply bg-zinc-950 text-slate-200;
+    background-image:
+      radial-gradient(ellipse 100% 60% at 50% -25%, rgba(79, 70, 229, 0.14), transparent 55%),
+      linear-gradient(180deg, #0a0a0a 0%, #121212 42%, #0c0c0c 100%);
+  }
+  .page-header {
+    @apply mb-6 flex flex-wrap items-center justify-between gap-4;
+  }
+  .page-header h1 {
+    @apply m-0 text-2xl font-bold tracking-tight text-slate-50;
+  }
+  .page > h1 {
+    @apply text-2xl font-bold tracking-tight text-slate-50;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition;
+  }
+  .btn-primary {
+    @apply bg-indigo-600 text-white shadow-md shadow-indigo-900/30 hover:bg-indigo-500;
+  }
+  .btn-secondary {
+    @apply border border-slate-500 bg-zinc-800 text-slate-100 hover:bg-zinc-700;
+  }
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-500;
+  }
+  .form-actions {
+    @apply flex flex-wrap gap-3 pt-2;
+  }
+  .muted {
+    @apply text-slate-500;
+  }
+  .field {
+    @apply flex flex-col gap-1.5;
+  }
+  .field label {
+    @apply font-semibold text-sm text-slate-700;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    @apply rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20;
+  }
+  .field-error {
+    @apply m-0 text-sm text-red-600;
+  }
+  .data-table {
+    @apply w-full border-collapse text-sm;
+  }
+  .data-table th,
+  .data-table td {
+    @apply border-b border-amber-500/20 px-4 py-3 text-center align-middle;
+  }
+  .data-table th {
+    @apply bg-zinc-900/70 font-semibold text-amber-100/95;
+  }
+  .data-table tbody tr {
+    @apply transition-colors hover:bg-amber-500/[0.06];
+  }
+  .data-table td {
+    @apply text-slate-200;
+  }
+  .table-wrap {
+    @apply mx-auto w-full max-w-5xl overflow-x-auto rounded-xl border-2 border-amber-500/45 bg-zinc-950/55 px-1 py-1 shadow-[0_0_28px_-6px_rgba(245,158,11,0.18)];
+  }
+  .table-wrap a {
+    @apply font-medium text-indigo-400 underline-offset-2 hover:text-indigo-300 hover:underline;
+  }
+  .table-wrap .link-btn {
+    @apply text-red-400 hover:text-red-300;
+  }
+  .error-banner {
+    @apply mb-4 rounded-lg border border-red-500/35 bg-red-950/45 px-4 py-3 text-red-200;
+  }
+  .ok-banner {
+    @apply mb-4 rounded-lg bg-emerald-50 px-4 py-3 text-emerald-800;
+  }
+  .error-list {
+    @apply mb-4 list-disc pl-5 text-red-700;
+  }
+  .pagination {
+    @apply mt-4 flex items-center gap-4;
+  }
+  .pagination-meta {
+    @apply text-sm text-slate-400;
+  }
+  .row-actions {
+    @apply flex items-center gap-3;
+  }
+  .link-btn {
+    @apply cursor-pointer border-none bg-transparent p-0 text-red-400 hover:text-red-300 hover:underline;
+    font: inherit;
+  }
+  .order-item-row {
+    @apply grid gap-3 rounded-xl border-2 border-amber-500/35 bg-zinc-950/50 p-4 sm:grid-cols-[2fr_1fr_auto] sm:items-end;
+  }
+
+  /* Perfil: painel único com campos legíveis no tema escuro */
+  .profile-panel .field label {
+    @apply text-slate-300;
+  }
+  .profile-panel .field input,
+  .profile-panel .field select,
+  .profile-panel .field textarea {
+    @apply border-amber-500/25 bg-zinc-950/70 text-slate-100 placeholder:text-slate-500 focus:border-amber-400/60 focus:ring-amber-500/20;
+  }
+  .profile-panel .field input:disabled {
+    @apply text-slate-400;
+  }
+
+  /* Formulários admin (categorias, etc.): painel com borda âmbar e texto claro */
+  .admin-form-panel {
+    @apply rounded-2xl border-2 border-amber-500/45 bg-zinc-900/45 p-6 sm:p-8 shadow-[0_0_32px_-8px_rgba(245,158,11,0.2)];
+  }
+  .admin-form-panel .field label {
+    @apply text-white;
+  }
+  .admin-form-panel .field input,
+  .admin-form-panel .field select,
+  .admin-form-panel .field textarea {
+    @apply border-amber-500/25 bg-zinc-950/70 text-slate-100 placeholder:text-slate-500 focus:border-amber-400/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20;
+  }
+  .admin-form-panel .field-error {
+    @apply text-red-400;
+  }
+  .admin-form-panel h2 {
+    @apply text-lg font-semibold text-white;
+  }
+}
