@@ -118,7 +118,9 @@ export class OrderService {
     readonly items: readonly { productId: string; quantity: number }[];
     readonly orderUserId: string;
     readonly auditAction: string;
-    readonly auditDetails: Record<string, unknown>;
+    readonly auditDetails: Readonly<
+      Record<string, string | number | boolean | null>
+    >;
     readonly actingUserId: string;
   }): Promise<Order> {
     const bundle = await prisma.$transaction(async (tx) => {

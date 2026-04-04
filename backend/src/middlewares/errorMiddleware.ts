@@ -7,9 +7,14 @@ const prismaMessage = (err: Prisma.PrismaClientKnownRequestError): string => {
   if (err.code === 'P2003') return 'Não é possível remover: há vínculos ativos';
   if (err.code === 'P2025') return 'Recurso não encontrado';
   if (err.code === 'P2022') {
+    const meta = err.meta;
     const col =
-      err.meta !== undefined && typeof err.meta === 'object' && 'column' in err.meta
-        ? String((err.meta as { column?: unknown }).column ?? '')
+      meta !== undefined &&
+      typeof meta === 'object' &&
+      meta !== null &&
+      'column' in meta &&
+      typeof (meta as { column?: string }).column === 'string'
+        ? (meta as { column: string }).column
         : '';
     return col.length > 0
       ? `Coluna ausente no banco (${col}). Execute: npx prisma migrate deploy ou npx prisma db push (na pasta backend).`

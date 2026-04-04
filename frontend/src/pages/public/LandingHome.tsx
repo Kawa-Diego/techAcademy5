@@ -52,7 +52,6 @@ export const LandingHome = (): ReactElement => {
           className="relative z-10 mx-auto max-w-7xl text-center"
         >
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm font-semibold text-amber-100/90">
-            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
             <span>A melhor experiência de compra</span>
           </div>
           <h1 className="mb-6 text-4xl font-black leading-[1.1] tracking-tight text-slate-50 sm:text-5xl lg:text-7xl">

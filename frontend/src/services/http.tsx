@@ -25,26 +25,6 @@ export class ApiRequestError extends Error {
   }
 }
 
-/** Mensagem amigável para falha no upload de imagens (admin + URL da API). */
-export const describeUploadError = (e: unknown): string => {
-  if (!(e instanceof ApiRequestError)) {
-    return 'Não foi possível enviar as imagens. Verifique sua conexão e se o backend está rodando.';
-  }
-  if (e.status === 0) {
-    return e.message;
-  }
-  if (e.status === 401) {
-    return 'Sessão expirada ou não autenticado. Faça login novamente.';
-  }
-  if (e.status === 403) {
-    return 'Apenas administradores podem enviar imagens. Confira se está logado como ADMIN.';
-  }
-  if (e.status === 404) {
-    return 'Upload não encontrado. Em desenvolvimento, deixe VITE_API_URL vazio no .env ou use http://localhost:3333 (sem /api no final). O backend precisa estar em execução.';
-  }
-  return e.message;
-};
-
 const parseJson = (text: string): JsonValue => {
   return JSON.parse(text) as JsonValue;
 };

@@ -6,21 +6,22 @@ import type {
   UpdateUserPayload,
 } from '@ecommerce/shared';
 import { AppError } from '../errors/AppError';
+import { zodNonEmptyDisplayName } from './nameField';
 
 const registerSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().min(1),
+  name: zodNonEmptyDisplayName,
+  email: z.string().min(1).transform((s) => s.trim()),
   password: z.string().min(1),
   cpf: z.string().min(1),
 });
 
 const loginSchema = z.object({
-  email: z.string().min(1),
+  email: z.string().min(1).transform((s) => s.trim()),
   password: z.string().min(1),
 });
 
 const updateSchema = z.object({
-  name: z.string().min(1),
+  name: zodNonEmptyDisplayName,
   password: z.string().min(1),
   cpf: z.string().min(1),
 });

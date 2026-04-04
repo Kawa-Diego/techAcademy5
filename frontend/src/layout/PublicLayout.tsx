@@ -18,6 +18,7 @@ export const PublicLayout = (): ReactElement => {
   const [categories, setCategories] = useState<readonly Category[]>([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [loginPrefillEmail, setLoginPrefillEmail] = useState<string | null>(null);
 
   useEffect(() => {
     void httpJson<SiteNavigationResponse>(
@@ -83,18 +84,27 @@ export const PublicLayout = (): ReactElement => {
 
       <LoginModal
         isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
+        onClose={() => {
+          setIsLoginModalOpen(false);
+          setLoginPrefillEmail(null);
+        }}
         onOpenRegister={() => {
           setIsLoginModalOpen(false);
           setIsRegisterModalOpen(true);
         }}
         returnTo={returnTo}
+        prefilledEmail={loginPrefillEmail}
       />
 
       <RegisterModal
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         onOpenLogin={() => {
+          setIsRegisterModalOpen(false);
+          setIsLoginModalOpen(true);
+        }}
+        onRegistered={(registeredEmail) => {
+          setLoginPrefillEmail(registeredEmail);
           setIsRegisterModalOpen(false);
           setIsLoginModalOpen(true);
         }}

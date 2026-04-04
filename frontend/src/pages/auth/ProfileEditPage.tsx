@@ -4,8 +4,6 @@ import {
   cpfDigitsOnly,
   formatCpfMasked,
   formatDisplayName,
-  isStrongPassword,
-  isValidCpf,
   passwordHint,
 } from '@ecommerce/shared';
 import { useAuth } from '../../context/AuthContext';
@@ -14,6 +12,7 @@ import { TextField } from '../../components/ui/TextField';
 import { FormActions } from '../../components/ui/FormActions';
 import { ErrorBanner } from '../../components/ui/ErrorBanner';
 import { ApiRequestError } from '../../services/http';
+import { collectProfileUpdateErrors } from '../../validation/profileForm';
 
 function initialsFromName(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -89,10 +88,7 @@ export const ProfileEditPage = (): React.ReactElement => {
     ev.preventDefault();
     setError(null);
     setOk(null);
-    const msgs: string[] = [];
-    if (!isValidCpf(cpf)) msgs.push('CPF inválido');
-    if (!isStrongPassword(password)) msgs.push(passwordHint);
-    if (password !== confirm) msgs.push('Senhas não conferem');
+    const msgs = collectProfileUpdateErrors({ name, cpf, password, confirm });
     if (msgs.length > 0) {
       setClientErrors(msgs);
       return;

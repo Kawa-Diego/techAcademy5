@@ -12,6 +12,7 @@ import { LandingVitrine } from "./pages/public/LandingVitrine";
 import { ProductPublicDetailPage } from "./pages/public/ProductPublicDetailPage";
 import { DashboardHome } from "./pages/DashboardHome";
 import { UserListPage } from "./pages/users/UserListPage";
+import { UserEditPage } from "./pages/users/UserEditPage";
 import { CategoryListPage } from "./pages/categories/CategoryListPage";
 import { CategoryNewPage } from "./pages/categories/CategoryNewPage";
 import { CategoryEditPage } from "./pages/categories/CategoryEditPage";
@@ -44,6 +45,7 @@ export const App = (): React.ReactElement => (
             <Route element={<AdminOnlyOutlet />}>
               <Route path="/dashboard" element={<DashboardHome />} />
               <Route path="/users" element={<UserListPage />} />
+              <Route path="/users/:id/edit" element={<UserEditPage />} />
               <Route path="/categories" element={<CategoryListPage />} />
               <Route path="/categories/new" element={<CategoryNewPage />} />
               <Route path="/categories/:id/edit" element={<CategoryEditPage />} />

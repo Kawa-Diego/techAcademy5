@@ -119,6 +119,28 @@
     @apply grid gap-3 rounded-xl border-2 border-amber-500/35 bg-zinc-950/50 p-4 sm:grid-cols-[2fr_1fr_auto] sm:items-end;
   }
 
+  /* Modais de login e cadastro: cartão escuro semitransparente + inputs legíveis */
+  .auth-modal {
+    @apply rounded-2xl border border-white/10 bg-slate-950/80 p-8 shadow-2xl shadow-black/50 backdrop-blur-md;
+  }
+  .auth-modal .field label {
+    @apply text-slate-300;
+  }
+  .auth-modal .field input,
+  .auth-modal .field select,
+  .auth-modal .field textarea {
+    @apply border-slate-600/90 bg-slate-900/75 text-slate-100 caret-indigo-400 placeholder:text-slate-500 shadow-inner shadow-black/25 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30;
+  }
+  .auth-modal .ok-banner {
+    @apply border border-emerald-500/35 bg-emerald-950/55 text-emerald-100;
+  }
+  .auth-modal .error-list {
+    @apply text-red-300;
+  }
+  .auth-modal .field-error {
+    @apply text-red-300;
+  }
+
   /* Perfil: painel único com campos legíveis no tema escuro */
   .profile-panel .field label {
     @apply text-slate-300;

@@ -2,13 +2,8 @@ import { type FormEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { Category, PaginatedResult, Product } from '@ecommerce/shared';
 import { useAuth } from '../../context/AuthContext';
-import {
-  ApiRequestError,
-  describeUploadError,
-  httpFormData,
-  httpJson,
-  mediaUrl,
-} from '../../services/http';
+import { ApiRequestError, httpFormData, httpJson, mediaUrl } from '../../services/http';
+import { describeUploadError } from '../../services/uploadErrorMessage';
 import { TextField } from '../../components/ui/TextField';
 import { SelectField } from '../../components/ui/SelectField';
 import { Button } from '../../components/ui/Button';

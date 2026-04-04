@@ -4,6 +4,7 @@ import type { Order, PaginatedResult } from '@ecommerce/shared';
 import { useAuth } from '../../context/AuthContext';
 import { httpJson, ApiRequestError } from '../../services/http';
 import { ErrorBanner } from '../../components/ui/ErrorBanner';
+import { PaginationControls } from '../../components/ui/PaginationControls';
 
 const formatMoney = (cents: number): string =>
   (cents / 100).toLocaleString('pt-BR', {
@@ -13,6 +14,7 @@ const formatMoney = (cents: number): string =>
 
 export const OrderListPage = (): ReactElement => {
   const { token, user } = useAuth();
+  const [page, setPage] = useState(1);
   const [list, setList] = useState<PaginatedResult<Order> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busyKey, setBusyKey] = useState<string | null>(null);
@@ -22,7 +24,7 @@ export const OrderListPage = (): ReactElement => {
     setError(null);
     try {
       const res = await httpJson<PaginatedResult<Order>>(
-        '/orders?page=1&pageSize=100',
+        `/orders?page=${String(page)}&pageSize=10`,
         { method: 'GET' },
         token
       );
@@ -31,7 +33,7 @@ export const OrderListPage = (): ReactElement => {
       if (e instanceof ApiRequestError) setError(e.message);
       else setError('Falha ao carregar pedidos');
     }
-  }, [token]);
+  }, [token, page]);
 
   useEffect(() => {
     void load();
@@ -88,6 +90,7 @@ export const OrderListPage = (): ReactElement => {
 
   const isAdmin = user?.role === 'ADMIN';
   const orders = list?.data ?? [];
+  const meta = list?.meta;
 
   return (
     <div className="page">
@@ -197,6 +200,13 @@ export const OrderListPage = (): ReactElement => {
           </section>
         ))}
       </div>
+      {meta !== undefined ? (
+        <PaginationControls
+          page={meta.page}
+          totalPages={meta.totalPages}
+          onPageChange={setPage}
+        />
+      ) : null}
     </div>
   );
 };

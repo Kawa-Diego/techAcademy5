@@ -1,12 +1,17 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import request from 'supertest';
 import { createApp } from '../../src/app';
-import { prisma } from '../../src/lib/prisma';
+import { prisma, resetInMemoryPrisma } from '../mocks/inMemoryPrisma';
+
+vi.mock('../../src/lib/prisma', async () => {
+  const mod = await import('../mocks/inMemoryPrisma');
+  return { prisma: mod.prisma };
+});
 
 const validCpf = '39053344705';
 const strongPass = 'SenhaForte1!';
 
-describe('API e-commerce', () => {
+describe('API e-commerce (dados mockados em memória, sem PostgreSQL)', () => {
   const app = createApp();
 
   it('GET /site/navigation retorna menu público', async () => {
@@ -24,15 +29,12 @@ describe('API e-commerce', () => {
   });
   let adminToken = '';
   let userToken = '';
+  let userId = '';
   let categoryId = '';
   let productId = '';
 
   beforeAll(async () => {
-    await prisma.orderItem.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.product.deleteMany();
-    await prisma.category.deleteMany();
-    await prisma.user.deleteMany();
+    resetInMemoryPrisma();
 
     await request(app).post('/auth/register').send({
       name: 'Admin User',
@@ -46,7 +48,7 @@ describe('API e-commerce', () => {
     });
     if (adminRow === null) throw new Error('usuário admin não criado');
     await prisma.user.update({
-      where: { id: adminRow.id },
+      where: { id: (adminRow as { id: string }).id },
       data: { role: 'ADMIN' },
     });
 
@@ -72,6 +74,7 @@ describe('API e-commerce', () => {
     expect(userLogin.status).toBe(200);
     userToken = userLogin.body.token as string;
     expect(userLogin.body.user.role).toBe('USER');
+    userId = userLogin.body.user.id as string;
   });
 
   afterAll(async () => {
@@ -81,6 +84,17 @@ describe('API e-commerce', () => {
   it('rejeita GET /auth/status sem token', async () => {
     const res = await request(app).get('/auth/status');
     expect(res.status).toBe(401);
+  });
+
+  it('rejeita cadastro com nome só com espaços', async () => {
+    const res = await request(app).post('/auth/register').send({
+      name: '   \t  ',
+      email: 'espaco@example.com',
+      password: strongPass,
+      cpf: '1',
+    });
+    expect(res.status).toBe(400);
+    expect(String(res.body.message ?? '')).toMatch(/nome/i);
   });
 
   it('usuário comum não cria categoria (403)', async () => {
@@ -131,11 +145,13 @@ describe('API e-commerce', () => {
         priceCents: 100,
         model3dUrl: 'https://example.com/m.glb',
         categoryId,
+        imageUrls: ['https://example.com/a.jpg'],
+        stockQuantity: 5,
       });
     expect(res.status).toBe(403);
   });
 
-  it('admin cria produto', async () => {
+  it('admin cria produtos (dois itens para evitar bloqueio de catálogo único)', async () => {
     const res = await request(app)
       .post('/products')
       .set('Authorization', `Bearer ${adminToken}`)
@@ -146,9 +162,24 @@ describe('API e-commerce', () => {
         model3dUrl: 'https://example.com/m.glb',
         imageUrls: ['https://example.com/img1.jpg'],
         categoryId,
+        stockQuantity: 20,
       });
     expect(res.status).toBe(201);
     productId = res.body.id as string;
+
+    const res2 = await request(app)
+      .post('/products')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        name: 'Extra catálogo',
+        description: 'Segundo item',
+        priceCents: 500,
+        model3dUrl: 'https://example.com/extra.glb',
+        imageUrls: ['https://example.com/img2.jpg'],
+        categoryId,
+        stockQuantity: 10,
+      });
+    expect(res2.status).toBe(201);
   });
 
   it('cliente cria pedido autenticado', async () => {
@@ -156,7 +187,6 @@ describe('API e-commerce', () => {
       .post('/orders')
       .set('Authorization', `Bearer ${userToken}`)
       .send({
-        status: 'PENDING',
         notes: 'Pedido teste',
         items: [{ productId, quantity: 2 }],
       });
@@ -177,6 +207,40 @@ describe('API e-commerce', () => {
       .set('Authorization', `Bearer ${adminToken}`);
     expect(res.status).toBe(200);
     expect(res.body.data.length).toBeGreaterThan(0);
+  });
+
+  it('GET /users/:id sem token retorna 401', async () => {
+    const res = await request(app).get(`/users/${userId}`);
+    expect(res.status).toBe(401);
+  });
+
+  it('GET /users/:id como usuário comum retorna 403', async () => {
+    const res = await request(app)
+      .get(`/users/${userId}`)
+      .set('Authorization', `Bearer ${userToken}`);
+    expect(res.status).toBe(403);
+  });
+
+  it('GET /users/:id como admin retorna o usuário', async () => {
+    const res = await request(app)
+      .get(`/users/${userId}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.id).toBe(userId);
+    expect(res.body.email).toBe('user@example.com');
+  });
+
+  it('PUT /users/:id como admin atualiza o usuário', async () => {
+    const res = await request(app)
+      .put(`/users/${userId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        name: 'Cliente Admin Editado',
+        password: strongPass,
+        cpf: '52998224725',
+      });
+    expect(res.status).toBe(200);
+    expect(res.body.name).toBe('Cliente Admin Editado');
   });
 
   it('redefine senha por e-mail em /auth/forgot-password', async () => {

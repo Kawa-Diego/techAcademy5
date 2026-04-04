@@ -17,6 +17,8 @@ type Props = {
   readonly onOpenRegister: () => void;
   /** Após login, navegar para este caminho (ex.: vitrine). Só caminhos relativos internos. */
   readonly returnTo?: string | null;
+  /** E-mail preenchido (ex.: após cadastro). */
+  readonly prefilledEmail?: string | null;
 };
 
 type Panel = 'login' | 'forgot';
@@ -26,6 +28,7 @@ export const LoginModal = ({
   onClose,
   onOpenRegister,
   returnTo = null,
+  prefilledEmail = null,
 }: Props): React.ReactElement | null => {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -56,6 +59,12 @@ export const LoginModal = ({
       setSuccessMessage(null);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || prefilledEmail === null || prefilledEmail.length === 0) return;
+    setEmail(prefilledEmail);
+    setPanel('login');
+  }, [isOpen, prefilledEmail]);
 
   useScrollLock(isOpen, mounted);
 
@@ -170,14 +179,14 @@ export const LoginModal = ({
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden bg-slate-900/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden bg-slate-950/70 p-4 backdrop-blur-md"
       role="presentation"
       onClick={close}
     >
       <div className="flex min-h-full items-center justify-center">
         <div
           ref={panelRef}
-          className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-2xl shadow-indigo-950/10"
+          className="auth-modal relative w-full max-w-md"
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}
@@ -186,7 +195,7 @@ export const LoginModal = ({
         <button
           type="button"
           onClick={close}
-          className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800"
+          className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white/10 hover:text-slate-100"
           aria-label="Fechar"
         >
           <X className="h-5 w-5" />
@@ -195,7 +204,7 @@ export const LoginModal = ({
           <>
             <h2
               id="login-title"
-              className="mb-6 text-2xl font-bold tracking-tight text-slate-900"
+              className="mb-6 text-2xl font-bold tracking-tight text-slate-50"
             >
               Entrar
             </h2>
@@ -219,7 +228,11 @@ export const LoginModal = ({
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={fieldError ? 'border-red-400' : ''}
+                  className={
+                    fieldError
+                      ? '!border-red-400 ring-1 ring-red-400/40'
+                      : ''
+                  }
                   aria-invalid={Boolean(fieldError)}
                   required
                 />
@@ -241,7 +254,7 @@ export const LoginModal = ({
                       setFieldError(null);
                       setPanel('forgot');
                     }}
-                    className="text-xs font-medium text-indigo-600 hover:text-indigo-800"
+                    className="text-xs font-medium text-indigo-400 hover:text-indigo-300"
                   >
                     Esqueceu sua senha?
                   </button>
@@ -266,7 +279,7 @@ export const LoginModal = ({
                 <button
                   type="button"
                   onClick={onOpenRegister}
-                  className="text-center text-sm font-medium text-indigo-600 hover:text-indigo-800"
+                  className="text-center text-sm font-medium text-indigo-400 hover:text-indigo-300"
                 >
                   Criar conta
                 </button>
@@ -277,11 +290,11 @@ export const LoginModal = ({
           <>
             <h2
               id="forgot-title"
-              className="mb-2 text-2xl font-bold tracking-tight text-slate-900"
+              className="mb-2 text-2xl font-bold tracking-tight text-slate-50"
             >
               Redefinir senha
             </h2>
-            <p className="mb-6 text-sm text-slate-600">
+            <p className="mb-6 text-sm text-slate-400">
               Informe o e-mail cadastrado e a nova senha. Você poderá entrar em seguida.
             </p>
             {error ? (
@@ -299,7 +312,11 @@ export const LoginModal = ({
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={fieldError ? 'border-red-400' : ''}
+                  className={
+                    fieldError
+                      ? '!border-red-400 ring-1 ring-red-400/40'
+                      : ''
+                  }
                   aria-invalid={Boolean(fieldError)}
                   required
                 />
@@ -336,7 +353,7 @@ export const LoginModal = ({
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <button
                   type="submit"
-                  className="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:bg-indigo-700 active:scale-[0.98]"
+                  className="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:bg-indigo-500 active:scale-[0.98]"
                 >
                   Atualizar senha
                 </button>
@@ -347,7 +364,7 @@ export const LoginModal = ({
                     setFieldError(null);
                     setPanel('login');
                   }}
-                  className="text-center text-sm font-medium text-slate-600 hover:text-slate-900"
+                  className="text-center text-sm font-medium text-slate-400 hover:text-slate-200"
                 >
                   Voltar ao login
                 </button>

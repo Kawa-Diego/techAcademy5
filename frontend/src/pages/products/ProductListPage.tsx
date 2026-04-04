@@ -61,6 +61,7 @@ export const ProductListPage = (): React.ReactElement => {
     },
     { header: 'Nome', render: (r) => r.name },
     { header: 'Preço', render: (r) => formatCents(r.priceCents) },
+    { header: 'Estoque', render: (r) => String(r.stockQuantity) },
     { header: 'Categoria (id)', render: (r) => r.categoryId },
     {
       header: 'Ações',
