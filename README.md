@@ -2,11 +2,13 @@
 
 Monorepo com **API REST em Node/Express (MVC + POO)**, **SPA em React** e **tipos compartilhados** em `@ecommerce/shared`.
 
+**Documentação completa do código (pastas, funções, ligações e alinhamento à rubrica de avaliação):** ver [`DOCUMENTACAO_COMPLETA_CODIGO.txt`](./DOCUMENTACAO_COMPLETA_CODIGO.txt).
+
 ## Estrutura de pastas
 
 ```text
 ecommerce-web/
-├── shared/src/              # Tipos e contratos API (sem any/unknown)
+├── shared/src/              # Tipos e contratos API (tipagem explícita; ver doc para ressalvas)
 ├── backend/
 │   ├── prisma/              # Schema PostgreSQL + prisma db push / migrate
 │   ├── src/
