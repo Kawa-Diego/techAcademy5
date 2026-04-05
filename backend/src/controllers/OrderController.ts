@@ -18,7 +18,7 @@ export class OrderController {
     const uid = req.authUserId;
     const role = req.authRole;
     if (uid === undefined || role === undefined) {
-      res.status(401).json({ message: 'Não autorizado' });
+      res.status(401).json({ message: 'Unauthorized' });
       return;
     }
     const result = await this.orders.listSummary(uid, role as UserRole);
@@ -29,7 +29,7 @@ export class OrderController {
     const uid = req.authUserId;
     const role = req.authRole;
     if (uid === undefined || role === undefined) {
-      res.status(401).json({ message: 'Não autorizado' });
+      res.status(401).json({ message: 'Unauthorized' });
       return;
     }
     const q = parsePagination(req.query as Record<string, string | undefined>);
@@ -41,7 +41,7 @@ export class OrderController {
     const uid = req.authUserId;
     const role = req.authRole;
     if (uid === undefined || role === undefined) {
-      res.status(401).json({ message: 'Não autorizado' });
+      res.status(401).json({ message: 'Unauthorized' });
       return;
     }
     const row = await this.orders.getById(
@@ -56,7 +56,7 @@ export class OrderController {
     const uid = req.authUserId;
     const role = req.authRole;
     if (uid === undefined || role === undefined) {
-      res.status(401).json({ message: 'Não autorizado' });
+      res.status(401).json({ message: 'Unauthorized' });
       return;
     }
     if (role === 'USER') {
@@ -73,7 +73,7 @@ export class OrderController {
   public readonly postRefundRequest = asyncRoute(async (req, res) => {
     const uid = req.authUserId;
     if (uid === undefined) {
-      res.status(401).json({ message: 'Não autorizado' });
+      res.status(401).json({ message: 'Unauthorized' });
       return;
     }
     parseRefundRequestBody(getJsonBody(req));
@@ -86,7 +86,7 @@ export class OrderController {
   public readonly postRefundConfirm = asyncRoute(async (req, res) => {
     const uid = req.authUserId;
     if (uid === undefined) {
-      res.status(401).json({ message: 'Não autorizado' });
+      res.status(401).json({ message: 'Unauthorized' });
       return;
     }
     const orderId = req.params['orderId'] ?? '';

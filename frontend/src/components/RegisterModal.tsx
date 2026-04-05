@@ -121,7 +121,7 @@ export const RegisterModal = ({
       close();
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Falha no cadastro');
+      else setError('Registration failed');
     } finally {
       setSubmitting(false);
     }
@@ -149,7 +149,7 @@ export const RegisterModal = ({
           type="button"
           onClick={close}
           className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white/10 hover:text-slate-100"
-          aria-label="Fechar"
+          aria-label="Close"
         >
           <X className="h-5 w-5" />
         </button>
@@ -157,7 +157,7 @@ export const RegisterModal = ({
           id="register-title"
           className="mb-6 text-2xl font-bold tracking-tight text-slate-50"
         >
-          Criar conta
+          Create account
         </h2>
         {error ? (
           <p className="error-banner" role="alert">
@@ -173,7 +173,7 @@ export const RegisterModal = ({
         ) : null}
         <form className="flex flex-col gap-4" onSubmit={(e) => void onSubmit(e)}>
           <div className="field">
-            <label htmlFor="register-name">Nome</label>
+            <label htmlFor="register-name">Name</label>
             <input
               id="register-name"
               name="name"
@@ -185,7 +185,7 @@ export const RegisterModal = ({
             />
           </div>
           <div className="field">
-            <label htmlFor="register-email">E-mail</label>
+            <label htmlFor="register-email">Email</label>
             <input
               id="register-email"
               name="email"
@@ -211,7 +211,7 @@ export const RegisterModal = ({
             />
           </div>
           <div className="field">
-            <label htmlFor="register-password">Senha</label>
+            <label htmlFor="register-password">Password</label>
             <input
               id="register-password"
               name="password"
@@ -223,7 +223,7 @@ export const RegisterModal = ({
             />
           </div>
           <div className="field">
-            <label htmlFor="register-confirm">Confirmar senha</label>
+            <label htmlFor="register-confirm">Confirm password</label>
             <input
               id="register-confirm"
               name="confirm"
@@ -240,14 +240,14 @@ export const RegisterModal = ({
               disabled={submitting}
               className="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:bg-indigo-500 active:scale-[0.98] disabled:opacity-60"
             >
-              {submitting ? 'Cadastrando…' : 'Cadastrar'}
+              {submitting ? 'Signing up…' : 'Sign up'}
             </button>
             <button
               type="button"
               onClick={onOpenLogin}
               className="text-center text-sm font-medium text-indigo-400 hover:text-indigo-300"
             >
-              Já tenho conta
+              I already have an account
             </button>
           </div>
         </form>

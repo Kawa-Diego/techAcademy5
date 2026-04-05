@@ -9,14 +9,14 @@ export type JwtPayload = {
 
 const readSub = (decoded: object): string => {
   const subRaw = Reflect.get(decoded, 'sub');
-  if (typeof subRaw !== 'string') throw new Error('Token inválido');
+  if (typeof subRaw !== 'string') throw new Error('Invalid token');
   return subRaw;
 };
 
 const readRole = (decoded: object): UserRole => {
   const roleRaw = Reflect.get(decoded, 'role');
   if (roleRaw === 'USER' || roleRaw === 'ADMIN') return roleRaw;
-  throw new Error('Token inválido');
+  throw new Error('Invalid token');
 };
 
 export const signUserToken = (userId: string, role: UserRole): string => {
@@ -27,9 +27,9 @@ export const signUserToken = (userId: string, role: UserRole): string => {
 export const verifyUserToken = (token: string): JwtPayload => {
   const secret = getJwtSecret();
   const decoded = jwt.verify(token, secret);
-  if (typeof decoded === 'string') throw new Error('Token inválido');
+  if (typeof decoded === 'string') throw new Error('Invalid token');
   if (typeof decoded !== 'object' || decoded === null) {
-    throw new Error('Token inválido');
+    throw new Error('Invalid token');
   }
   return { sub: readSub(decoded), role: readRole(decoded) };
 };

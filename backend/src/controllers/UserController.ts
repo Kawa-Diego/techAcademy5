@@ -53,7 +53,7 @@ export class UserController {
 
   private userId(req: { authUserId?: string }): string {
     const id = req.authUserId;
-    if (!id) throw new AppError(401, 'Não autenticado');
+    if (!id) throw new AppError(401, 'Not authenticated');
     return id;
   }
 

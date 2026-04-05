@@ -44,7 +44,7 @@ export const UserEditPage = (): ReactElement => {
         setCpf(formatCpfMasked(row.cpf));
       } catch (e) {
         if (e instanceof ApiRequestError) setLoadError(e.message);
-        else setLoadError('Não foi possível carregar o usuário');
+        else setLoadError('Could not load user');
         setTarget(null);
       }
     })();
@@ -75,12 +75,12 @@ export const UserEditPage = (): ReactElement => {
         token
       );
       setTarget(next);
-      setOk('Usuário atualizado.');
+      setOk('User updated.');
       setPassword('');
       setConfirm('');
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Não foi possível salvar');
+      else setError('Could not save');
     }
   };
 
@@ -89,26 +89,26 @@ export const UserEditPage = (): ReactElement => {
       <div className="page">
         <ErrorBanner message={loadError} />
         <Link to="/users" className="text-indigo-400 hover:text-indigo-300">
-          ← Voltar à lista
+          ← Back to list
         </Link>
       </div>
     );
   }
 
   if (target === null) {
-    return <div className="page text-slate-500">Carregando…</div>;
+    return <div className="page text-slate-500">Loading…</div>;
   }
 
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Editar usuário</h1>
+        <h1>Edit user</h1>
         <Link to="/users" className="btn btn-secondary">
-          Voltar à lista
+          Back to list
         </Link>
       </div>
       <p className="mb-4 text-sm text-slate-500">
-        E-mail: <span className="text-slate-300">{email}</span> (somente leitura no sistema)
+        Email: <span className="text-slate-300">{email}</span> (read-only in the system)
       </p>
       <ErrorBanner message={error} />
       {ok ? (
@@ -126,14 +126,14 @@ export const UserEditPage = (): ReactElement => {
       <div className="admin-form-panel">
         <form onSubmit={(e) => void onSubmit(e)} className="stack narrow max-w-xl">
           <TextField
-            label="Nome completo"
+            label="Full name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onBlur={() => setName((n) => formatDisplayName(n))}
             autoComplete="name"
             required
           />
-          <TextField label="E-mail" value={email} disabled readOnly />
+          <TextField label="Email" value={email} disabled readOnly />
           <TextField
             label="CPF"
             value={cpf}
@@ -145,7 +145,7 @@ export const UserEditPage = (): ReactElement => {
             required
           />
           <TextField
-            label="Nova senha"
+            label="New password"
             type="password"
             autoComplete="new-password"
             value={password}
@@ -153,7 +153,7 @@ export const UserEditPage = (): ReactElement => {
             required
           />
           <TextField
-            label="Confirmar senha"
+            label="Confirm password"
             type="password"
             autoComplete="new-password"
             value={confirm}
@@ -161,7 +161,7 @@ export const UserEditPage = (): ReactElement => {
             required
           />
           <FormActions>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit">Save</Button>
           </FormActions>
         </form>
       </div>

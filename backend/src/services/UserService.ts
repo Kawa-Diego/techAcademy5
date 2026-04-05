@@ -32,7 +32,7 @@ export class UserService {
 
   public async getMe(userId: string): Promise<UserPublic> {
     const existing = await this.users.findById(userId);
-    if (!existing) throw new AppError(404, 'Usuário não encontrado');
+    if (!existing) throw new AppError(404, 'User not found');
     return toUserPublic(existing);
   }
 
@@ -52,13 +52,13 @@ export class UserService {
 
   public async deleteSelf(userId: string): Promise<void> {
     const existing = await this.users.findById(userId);
-    if (!existing) throw new AppError(404, 'Usuário não encontrado');
+    if (!existing) throw new AppError(404, 'User not found');
     await this.users.deleteById(userId);
   }
 
   public async deleteAny(targetId: string): Promise<void> {
     const existing = await this.users.findById(targetId);
-    if (!existing) throw new AppError(404, 'Usuário não encontrado');
+    if (!existing) throw new AppError(404, 'User not found');
     await this.users.deleteById(targetId);
   }
 
@@ -69,7 +69,7 @@ export class UserService {
     assertValidCpf(body.cpf);
     assertStrongPassword(body.password);
     const existing = await this.users.findById(userId);
-    if (!existing) throw new AppError(404, 'Usuário não encontrado');
+    if (!existing) throw new AppError(404, 'User not found');
     const nextCpf = normalizeCpf(body.cpf);
     await this.ensureCpfAvailableForUser(nextCpf, userId);
     const hash = await hashPassword(body.password);
@@ -87,7 +87,7 @@ export class UserService {
   ): Promise<void> {
     const other = await this.users.findByCpf(cpf);
     if (other && other.id !== userId) {
-      throw new AppError(409, 'CPF já cadastrado');
+      throw new AppError(409, 'CPF already registered');
     }
   }
 }

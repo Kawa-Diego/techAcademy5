@@ -40,24 +40,24 @@ export const ContactSection = ({ navigation }: Props): ReactElement => {
   return (
     <section
       ref={rootRef}
-      id="contato"
+      id="contact"
       className="scroll-mt-24 px-4 py-16 sm:px-6 lg:scroll-mt-28 lg:py-24"
-      aria-labelledby="contato-heading"
+      aria-labelledby="contact-heading"
     >
       <div className="mx-auto max-w-7xl">
         <div className="rounded-2xl border-2 border-amber-500/45 bg-zinc-950/55 p-6 shadow-[0_0_32px_-8px_rgba(245,158,11,0.18)] sm:p-10 lg:p-12">
           <h2
-            id="contato-heading"
+            id="contact-heading"
             data-contact-animate
             className="mb-3 text-3xl font-bold tracking-tight text-slate-50 lg:text-4xl"
           >
-            Contato
+            Contact
           </h2>
           <p
             data-contact-animate
             className="mb-8 max-w-2xl text-lg leading-relaxed text-slate-300"
           >
-            Fale com a nossa equipe pelo WhatsApp ou visite nossas redes sociais.
+            Reach our team on WhatsApp or visit our social profiles.
           </p>
           {footer ? (
             <div
@@ -90,7 +90,7 @@ export const ContactSection = ({ navigation }: Props): ReactElement => {
             </div>
           ) : (
             <p data-contact-animate className="text-slate-500">
-              Carregando informações de contato…
+              Loading contact information…
             </p>
           )}
         </div>

@@ -25,7 +25,7 @@ export const UserListPage = (): ReactElement => {
       setError(null);
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Erro ao carregar usuários');
+      else setError('Failed to load users');
     }
   }, [token, page]);
 
@@ -43,17 +43,17 @@ export const UserListPage = (): ReactElement => {
   const onDelete = async (id: string, email: string): Promise<void> => {
     if (token === null) return;
     if (id === user?.id) {
-      window.alert('Use “Excluir minha conta” no seu perfil para remover a própria conta.');
+      window.alert('Use “Delete my account” in your profile to remove your own account.');
       return;
     }
-    if (!window.confirm(`Remover permanentemente a conta ${email}?`)) return;
+    if (!window.confirm(`Permanently remove account ${email}?`)) return;
     setDeletingId(id);
     try {
       await httpJson<undefined>(`/users/${id}`, { method: 'DELETE' }, token);
       await load();
     } catch (e) {
       if (e instanceof ApiRequestError) window.alert(e.message);
-      else window.alert('Não foi possível excluir');
+      else window.alert('Could not delete');
     } finally {
       setDeletingId(null);
     }
@@ -61,7 +61,7 @@ export const UserListPage = (): ReactElement => {
 
   if (data === null && error === null) {
     return (
-      <div className="page text-slate-500">Carregando usuários…</div>
+      <div className="page text-slate-500">Loading users…</div>
     );
   }
 
@@ -69,19 +69,19 @@ export const UserListPage = (): ReactElement => {
 
   return (
     <div className="page">
-      <h1 className="mb-6 text-2xl font-bold text-slate-50">Usuários</h1>
+      <h1 className="mb-6 text-2xl font-bold text-slate-50">Users</h1>
       <p className="mb-4 text-sm text-slate-500">
-        Lista atualizada automaticamente a cada 5 segundos.
+        List refreshes automatically every 5 seconds.
       </p>
       <ErrorBanner message={error} />
       <div className="table-wrap">
         <table className="data-table">
           <thead>
             <tr>
-              <th>Nome</th>
-              <th>E-mail</th>
-              <th>Papel</th>
-              <th>Ações</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -93,14 +93,14 @@ export const UserListPage = (): ReactElement => {
                 <td>
                   {u.id !== user?.id ? (
                     <span className="row-actions">
-                      <Link to={`/users/${u.id}/edit`}>Editar</Link>
+                      <Link to={`/users/${u.id}/edit`}>Edit</Link>
                       <button
                         type="button"
                         className="link-btn"
                         disabled={deletingId === u.id}
                         onClick={() => void onDelete(u.id, u.email)}
                       >
-                        {deletingId === u.id ? 'Removendo…' : 'Excluir'}
+                        {deletingId === u.id ? 'Removing…' : 'Delete'}
                       </button>
                     </span>
                   ) : (

@@ -7,7 +7,7 @@ export const requireAdmin = (
   next: NextFunction
 ): void => {
   if (req.authRole !== 'ADMIN') {
-    next(new AppError(403, 'Acesso restrito a administradores'));
+    next(new AppError(403, 'Administrators only'));
     return;
   }
   next();

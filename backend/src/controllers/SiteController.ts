@@ -13,7 +13,7 @@ export class SiteController {
 
   public readonly getAppMenu = asyncRoute(async (req: Request, res: Response) => {
     const role = req.authRole;
-    if (role === undefined) throw new AppError(401, 'Não autenticado');
+    if (role === undefined) throw new AppError(401, 'Not authenticated');
     res.status(200).json(this.site.getAppMenu(role as UserRole));
   });
 }

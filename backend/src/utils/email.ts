@@ -6,6 +6,6 @@ const EMAIL_REGEX =
 export const assertValidEmail = (email: string): void => {
   const trimmed = email.trim();
   if (!EMAIL_REGEX.test(trimmed)) {
-    throw new AppError(400, 'E-mail inválido');
+    throw new AppError(400, 'Invalid email');
   }
 };

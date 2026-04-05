@@ -2,10 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.formatDisplayName = formatDisplayName;
 exports.isNonEmptyDisplayName = isNonEmptyDisplayName;
-/**
- * Nome para exibição: primeira letra de cada palavra em maiúscula (ex.: "John Deep").
- * Usa regras de capitalização do locale pt-BR.
- */
+// Transform the display name to the first letter of each word in uppercase
 function formatDisplayName(raw) {
     const s = raw.trim();
     if (s.length === 0)
@@ -19,7 +16,7 @@ function formatDisplayName(raw) {
     })
         .join(' ');
 }
-/** True se, após normalização, o nome tem pelo menos um caractere (rejeita só espaços). */
+// Check if the display name is not empty
 function isNonEmptyDisplayName(raw) {
     return formatDisplayName(raw).length > 0;
 }

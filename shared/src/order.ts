@@ -7,10 +7,11 @@ export type OrderItem = {
   readonly unitPriceCents: number;
   readonly refundRequestedAt: string | null;
   readonly refundConfirmedAt: string | null;
-  /** Preenchido nas respostas da API quando o item inclui o produto. */
+  // Filled in the API responses when the item includes the product
   readonly productName?: string;
 };
 
+// Order type
 export type Order = {
   readonly id: string;
   readonly status: OrderStatus;
@@ -23,37 +24,41 @@ export type Order = {
   readonly userEmail?: string | null;
 };
 
+// Create order item payload type
 export type CreateOrderItemPayload = {
   readonly productId: string;
   readonly quantity: number;
 };
 
+// Create order payload type
 export type CreateOrderPayload = {
   readonly status: OrderStatus;
   readonly notes: string;
   readonly items: readonly CreateOrderItemPayload[];
 };
 
+// Update order payload type
 export type UpdateOrderPayload = CreateOrderPayload;
 
-/** Pedido feito pelo cliente na vitrine (status sempre PENDING no servidor). */
+// Customer create order payload type
 export type CustomerCreateOrderPayload = {
   readonly notes?: string;
   readonly items: readonly CreateOrderItemPayload[];
 };
 
+// Refund request payload type
 export type RefundRequestPayload = {
   readonly confirm: boolean;
 };
 
-/** Resumo de um produto agregado nos pedidos de um usuário */
+// Order user product summary type
 export type OrderUserProductSummary = {
   readonly productId: string;
   readonly productName: string;
   readonly totalQuantity: number;
 };
 
-/** Quantos pedidos o usuário fez e quais produtos (quantidades somadas) */
+// Order user summary type
 export type OrderUserSummary = {
   readonly userId: string | null;
   readonly userName: string;
@@ -62,6 +67,7 @@ export type OrderUserSummary = {
   readonly products: readonly OrderUserProductSummary[];
 };
 
+// Orders summary response type
 export type OrdersSummaryResponse = {
   readonly entries: readonly OrderUserSummary[];
 };

@@ -25,7 +25,7 @@ function initialsFromName(name: string): string {
 
 function formatJoinedAt(iso: string): string {
   try {
-    return new Intl.DateTimeFormat('pt-BR', {
+    return new Intl.DateTimeFormat('en-US', {
       day: '2-digit',
       month: 'long',
       year: 'numeric',
@@ -57,7 +57,7 @@ export const ProfileEditPage = (): React.ReactElement => {
   const [clientErrors, setClientErrors] = useState<string[]>([]);
 
   const email = user?.email ?? '';
-  const roleLabel = user?.role === 'ADMIN' ? 'Administrador' : 'Cliente';
+  const roleLabel = user?.role === 'ADMIN' ? 'Administrator' : 'Customer';
   const roleStyles =
     user?.role === 'ADMIN'
       ? 'bg-indigo-500/25 text-indigo-200 ring-1 ring-inset ring-indigo-400/35'
@@ -78,7 +78,7 @@ export const ProfileEditPage = (): React.ReactElement => {
           </div>
           <div className="mx-auto mt-8 h-8 max-w-xs rounded-lg bg-zinc-800" />
           <div className="mx-auto mt-3 h-4 max-w-sm rounded bg-zinc-800/70" />
-          <p className="mt-8 pb-6 text-center text-sm text-slate-500">Carregando perfil…</p>
+          <p className="mt-8 pb-6 text-center text-sm text-slate-500">Loading profile…</p>
         </div>
       </div>
     );
@@ -100,12 +100,12 @@ export const ProfileEditPage = (): React.ReactElement => {
         password,
         cpf: cpfDigitsOnly(cpf),
       });
-      setOk('Alterações salvas com sucesso.');
+      setOk('Changes saved successfully.');
       setPassword('');
       setConfirm('');
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Não foi possível salvar');
+      else setError('Could not save');
     }
   };
 
@@ -122,10 +122,10 @@ export const ProfileEditPage = (): React.ReactElement => {
             className="pointer-events-none absolute -bottom-8 left-1/4 h-32 w-32 rounded-full bg-violet-400/25 blur-xl"
             aria-hidden
           />
-          <p className="relative text-sm font-medium text-indigo-100">Sua conta</p>
-          <h1 className="relative mt-1 text-2xl font-bold tracking-tight text-white sm:text-3xl">Perfil</h1>
+          <p className="relative text-sm font-medium text-indigo-100">Your account</p>
+          <h1 className="relative mt-1 text-2xl font-bold tracking-tight text-white sm:text-3xl">Profile</h1>
           <p className="relative mt-2 max-w-lg text-sm text-indigo-100/90">
-            Atualize seus dados e mantenha a senha em dia para uma conta mais segura.
+            Update your details and keep your password fresh for a more secure account.
           </p>
         </div>
 
@@ -148,7 +148,7 @@ export const ProfileEditPage = (): React.ReactElement => {
               </div>
               <p className="mt-1 text-sm text-slate-300">{email}</p>
               <p className="mt-0.5 text-xs text-slate-500">
-                Membro desde {formatJoinedAt(user.createdAt)}
+                Member since {formatJoinedAt(user.createdAt)}
               </p>
             </div>
           </div>
@@ -170,7 +170,7 @@ export const ProfileEditPage = (): React.ReactElement => {
                 </svg>
               </span>
               <div>
-                <p className="font-semibold text-emerald-100">Tudo certo</p>
+                <p className="font-semibold text-emerald-100">All set</p>
                 <p className="text-sm text-emerald-200/90">{ok}</p>
               </div>
             </div>
@@ -201,14 +201,14 @@ export const ProfileEditPage = (): React.ReactElement => {
                   </svg>
                 </span>
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-50">Dados pessoais</h3>
-                  <p className="text-sm text-slate-400">Nome e documento usados na loja</p>
+                  <h3 className="text-lg font-semibold text-slate-50">Personal details</h3>
+                  <p className="text-sm text-slate-400">Name and ID used in the store</p>
                 </div>
               </div>
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <TextField
-                    label="Nome completo"
+                    label="Full name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     onBlur={() => setName((n) => formatDisplayName(n))}
@@ -216,7 +216,7 @@ export const ProfileEditPage = (): React.ReactElement => {
                     required
                   />
                 </div>
-                <TextField label="E-mail" value={email} disabled readOnly className="opacity-90" />
+                <TextField label="Email" value={email} disabled readOnly className="opacity-90" />
                 <TextField
                   label="CPF"
                   value={cpf}
@@ -229,7 +229,7 @@ export const ProfileEditPage = (): React.ReactElement => {
                 />
               </div>
               <p className="mt-4 text-xs text-slate-500">
-                O e-mail não pode ser alterado por aqui. Em caso de mudança, fale com o suporte.
+                Email cannot be changed here. For changes, contact support.
               </p>
             </div>
 
@@ -245,13 +245,13 @@ export const ProfileEditPage = (): React.ReactElement => {
                   </svg>
                 </span>
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-50">Segurança</h3>
-                  <p className="text-sm text-slate-400">Nova senha para confirmar as alterações</p>
+                  <h3 className="text-lg font-semibold text-slate-50">Security</h3>
+                  <p className="text-sm text-slate-400">New password to confirm your changes</p>
                 </div>
               </div>
               <div className="grid gap-6 sm:grid-cols-2">
                 <TextField
-                  label="Nova senha"
+                  label="New password"
                   type="password"
                   autoComplete="new-password"
                   value={password}
@@ -259,7 +259,7 @@ export const ProfileEditPage = (): React.ReactElement => {
                   required
                 />
                 <TextField
-                  label="Confirmar senha"
+                  label="Confirm password"
                   type="password"
                   autoComplete="new-password"
                   value={confirm}
@@ -275,7 +275,7 @@ export const ProfileEditPage = (): React.ReactElement => {
                 type="submit"
                 className="min-w-[140px] px-6 py-2.5 text-base font-semibold shadow-md shadow-indigo-500/25"
               >
-                Salvar alterações
+                Save changes
               </Button>
             </FormActions>
           </form>
@@ -293,15 +293,15 @@ export const ProfileEditPage = (): React.ReactElement => {
                 />
               </svg>
             </span>
-            <h3 className="text-lg font-semibold text-slate-50">Zona de perigo</h3>
+            <h3 className="text-lg font-semibold text-slate-50">Danger zone</h3>
             <p className="mt-2 text-sm text-slate-400">
-              Excluir a conta remove seus dados vinculados no sistema. Esta ação não pode ser desfeita.
+              Deleting your account removes your data from the system. This cannot be undone.
             </p>
             <button
               type="button"
               className="mt-6 rounded-xl border-2 border-amber-500/40 bg-zinc-900/80 px-6 py-2.5 text-sm font-semibold text-red-300 transition hover:border-amber-400/50 hover:bg-red-950/30 hover:text-red-200"
               onClick={() => {
-                if (!window.confirm('Tem certeza? Sua conta será apagada permanentemente.')) {
+                if (!window.confirm('Are you sure? Your account will be permanently deleted.')) {
                   return;
                 }
                 void (async () => {
@@ -310,12 +310,12 @@ export const ProfileEditPage = (): React.ReactElement => {
                     navigate('/');
                   } catch (e) {
                     if (e instanceof ApiRequestError) setError(e.message);
-                    else setError('Não foi possível excluir a conta');
+                    else setError('Could not delete account');
                   }
                 })();
               }}
             >
-              Excluir minha conta
+              Delete my account
             </button>
           </div>
         </div>

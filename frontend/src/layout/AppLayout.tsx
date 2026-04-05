@@ -176,7 +176,7 @@ export const AppLayout = (): ReactElement => {
               onClick={closeMobile}
               className="shrink-0 rounded-lg border border-slate-200/90 bg-white/95 px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-indigo-300 hover:text-indigo-700"
             >
-              Página principal
+              Home page
             </Link>
           </div>
 
@@ -185,7 +185,7 @@ export const AppLayout = (): ReactElement => {
             className="relative hidden min-h-[2.75rem] min-w-0 flex-1 items-center md:flex md:max-w-[min(100%,42rem)] md:flex-nowrap md:gap-1 md:overflow-x-auto md:py-1 md:[scrollbar-width:thin]"
           >
             {menu === null ? (
-              <span className="text-sm text-slate-500">Carregando menu…</span>
+              <span className="text-sm text-slate-500">Loading menu…</span>
             ) : (
               menu.items.map((item) => {
                 const active = isActiveMenuPath(item.path, pathname);
@@ -220,7 +220,7 @@ export const AppLayout = (): ReactElement => {
               onClick={logout}
               className="rounded-lg px-3 py-1.5 text-sm font-medium text-red-400/90 transition hover:bg-red-950/50 hover:text-red-300"
             >
-              Sair
+              Sign out
             </button>
           </div>
 
@@ -230,7 +230,7 @@ export const AppLayout = (): ReactElement => {
             onClick={() => setMobileOpen((o) => !o)}
             aria-expanded={mobileOpen}
             aria-controls="app-mobile-nav"
-            aria-label={mobileOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           >
             <MenuToggleIcon open={mobileOpen} />
           </button>
@@ -251,10 +251,10 @@ export const AppLayout = (): ReactElement => {
               <nav
                 ref={mobileNavRef}
                 className="relative flex flex-col gap-0.5 py-3"
-                aria-label="Menu da aplicação"
+                aria-label="Application menu"
               >
                 {menu === null ? (
-                  <span className="px-3 py-2 text-sm text-slate-500">Carregando menu…</span>
+                  <span className="px-3 py-2 text-sm text-slate-500">Loading menu…</span>
                 ) : (
                   menu.items.map((item) => {
                     const active = isActiveMenuPath(item.path, pathname);
@@ -286,7 +286,7 @@ export const AppLayout = (): ReactElement => {
                   }}
                   className="w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-red-400/90 transition hover:bg-red-950/40 hover:text-red-300"
                 >
-                  Sair
+                  Sign out
                 </button>
               </div>
             </div>

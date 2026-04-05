@@ -3,6 +3,7 @@ const hasLower = (p: string): boolean => /[a-z]/u.test(p);
 const hasDigit = (p: string): boolean => /[0-9]/u.test(p);
 const hasSpecial = (p: string): boolean => /[^A-Za-z0-9]/u.test(p);
 
+// Check if the password is strong
 export const isStrongPassword = (password: string): boolean =>
   password.length >= 8 &&
   hasUpper(password) &&
@@ -10,5 +11,6 @@ export const isStrongPassword = (password: string): boolean =>
   hasDigit(password) &&
   hasSpecial(password);
 
+// Password hint for password policy
 export const passwordHint =
-  'Mínimo 8 caracteres, com maiúscula, minúscula, número e especial.';
+  'At least 8 characters, with uppercase, lowercase, number, and special character.';

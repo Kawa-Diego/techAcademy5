@@ -35,35 +35,35 @@ export const DashboardHome = (): ReactElement => {
   return (
     <div ref={rootRef} className="page max-w-3xl">
       <h1 className="mb-2 text-3xl font-bold tracking-tight text-slate-50">
-        Olá, {user?.name}
+        Hello, {user?.name}
       </h1>
       <p className="mb-10 text-slate-400">
-        Área logada. Escolha um módulo ou gerencie seu perfil.
+        Signed-in area. Pick a module or manage your profile.
       </p>
       <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-7">
         <li>
           <Link to="/users" className={linkClass}>
-            Usuários
+            Users
           </Link>
         </li>
         <li>
           <Link to="/categories" className={linkClass}>
-            Categorias
+            Categories
           </Link>
         </li>
         <li>
           <Link to="/products" className={linkClass}>
-            Produtos
+            Products
           </Link>
         </li>
         <li>
           <Link to="/orders" className={linkClass}>
-            Pedidos
+            Orders
           </Link>
         </li>
         <li>
           <Link to="/profile/edit" className={linkClass}>
-            Editar perfil
+            Edit profile
           </Link>
         </li>
       </ul>

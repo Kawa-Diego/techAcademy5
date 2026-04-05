@@ -118,7 +118,7 @@ export const Navbar = ({
               to={user.role === 'ADMIN' ? '/dashboard' : '/orders'}
               className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/30 transition hover:bg-indigo-500 sm:px-5"
             >
-              Painel
+              Dashboard
             </Link>
           ) : (
             <>
@@ -127,7 +127,7 @@ export const Navbar = ({
                 onClick={onRegisterClick}
                 className="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-white/5 sm:px-4"
               >
-                Cadastrar
+                Sign up
               </button>
               <button
                 type="button"

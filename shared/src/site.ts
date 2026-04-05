@@ -1,5 +1,7 @@
+// Site navigation kind type
 export type SiteNavKind = 'internal' | 'external';
 
+// Site navigation item type
 export type SiteNavItem = {
   readonly id: string;
   readonly label: string;
@@ -7,6 +9,7 @@ export type SiteNavItem = {
   readonly kind: SiteNavKind;
 };
 
+// Site navigation response type
 export type SiteNavigationResponse = {
   readonly brand: { readonly label: string; readonly path: string };
   readonly nav: readonly SiteNavItem[];
@@ -26,6 +29,7 @@ export type SiteNavigationResponse = {
   };
 };
 
+// App menu response type
 export type AppMenuResponse = {
   readonly items: readonly { readonly label: string; readonly path: string }[];
   readonly brandHome: string;

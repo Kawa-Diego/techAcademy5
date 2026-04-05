@@ -20,7 +20,7 @@ export const CategoryNewPage = (): React.ReactElement => {
     if (token === null) return;
     setError(null);
     if (name.trim().length === 0 || description.trim().length === 0) {
-      setError('Preencha todos os campos obrigatórios');
+      setError('Fill in all required fields');
       return;
     }
     try {
@@ -35,25 +35,25 @@ export const CategoryNewPage = (): React.ReactElement => {
       navigate('/categories');
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Erro ao criar');
+      else setError('Failed to create');
     }
   };
 
   return (
     <div className="page">
-      <h1>Nova categoria</h1>
+      <h1>New category</h1>
       <ErrorBanner message={error} />
       <div className="admin-form-panel">
         <form onSubmit={(e) => void onSubmit(e)} className="stack narrow">
-          <TextField label="Nome" value={name} onChange={(e) => setName(e.target.value)} required />
+          <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} required />
           <TextField
-            label="Descrição"
+            label="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
           />
           <FormActions>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit">Save</Button>
           </FormActions>
         </form>
       </div>

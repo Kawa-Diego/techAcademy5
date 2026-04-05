@@ -3,7 +3,7 @@ import { AppError } from '../errors/AppError';
 const required = (key: string): string => {
   const value = process.env[key];
   if (!value || value.length === 0) {
-    throw new AppError(500, `Variável de ambiente ausente: ${key}`);
+    throw new AppError(500, `Missing environment variable: ${key}`);
   }
   return value;
 };

@@ -34,9 +34,9 @@ export class AuthService {
     passwords: { readonly current: string; readonly next: string }
   ): Promise<void> {
     const user = await this.users.findById(userId);
-    if (!user) throw new AppError(404, 'Usuário não encontrado');
+    if (!user) throw new AppError(404, 'User not found');
     const ok = await comparePassword(passwords.current, user.passwordHash);
-    if (!ok) throw new AppError(401, 'Senha atual incorreta');
+    if (!ok) throw new AppError(401, 'Current password is incorrect');
     assertStrongPassword(passwords.next);
     const hash = await hashPassword(passwords.next);
     await this.users.updateProfile(userId, {
@@ -53,7 +53,7 @@ export class AuthService {
     assertValidEmail(email);
     assertStrongPassword(newPassword);
     const user = await this.users.findByEmail(email.trim());
-    if (!user) throw new AppError(404, 'E-mail não cadastrado');
+    if (!user) throw new AppError(404, 'Email not registered');
     const hash = await hashPassword(newPassword);
     await this.users.updateProfile(user.id, {
       name: user.name,
@@ -65,9 +65,9 @@ export class AuthService {
   public async login(body: LoginPayload): Promise<LoginResponse> {
     assertValidEmail(body.email);
     const user = await this.users.findByEmail(body.email.trim());
-    if (!user) throw new AppError(401, 'Credenciais inválidas');
+    if (!user) throw new AppError(401, 'Invalid credentials');
     const ok = await comparePassword(body.password, user.passwordHash);
-    if (!ok) throw new AppError(401, 'Credenciais inválidas');
+    if (!ok) throw new AppError(401, 'Invalid credentials');
     const token = signUserToken(user.id, user.role as UserRole);
     return { token, user: toUserPublic(user) };
   }
@@ -80,12 +80,12 @@ export class AuthService {
 
   private async ensureEmailFree(email: string): Promise<void> {
     const exists = await this.users.findByEmail(email);
-    if (exists) throw new AppError(409, 'E-mail já cadastrado');
+    if (exists) throw new AppError(409, 'Email already registered');
   }
 
   private async ensureCpfFree(cpf: string): Promise<void> {
     const exists = await this.users.findByCpf(cpf);
-    if (exists) throw new AppError(409, 'CPF já cadastrado');
+    if (exists) throw new AppError(409, 'CPF already registered');
   }
 
   private async persistUser(

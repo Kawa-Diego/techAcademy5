@@ -22,7 +22,7 @@ const schema = z.object({
 
 const fail = (error: z.ZodError): never => {
   const first = error.issues[0];
-  throw new AppError(400, first?.message ?? 'Payload inválido');
+  throw new AppError(400, first?.message ?? 'Invalid payload');
 };
 
 export const parseOrderBody = (body: object): CreateOrderPayload => {

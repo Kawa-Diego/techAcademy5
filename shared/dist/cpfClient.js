@@ -1,11 +1,11 @@
 "use strict";
-/** Validação e máscara de CPF no cliente (cadastro / perfil). */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isValidCpf = exports.formatCpfMasked = exports.cpfDigitsOnly = void 0;
 const cpfDigitsOnly = (raw) => raw.replace(/\D/g, '');
 exports.cpfDigitsOnly = cpfDigitsOnly;
 const onlyDigits = exports.cpfDigitsOnly;
 const allSame = (digits) => digits.split('').every((d) => d === digits[0]);
+// Check digit for cpf validation
 const checkDigit = (base, factor) => {
     let sum = 0;
     for (let i = 0; i < base.length; i += 1) {
@@ -14,7 +14,7 @@ const checkDigit = (base, factor) => {
     const mod = sum % 11;
     return mod < 2 ? 0 : 11 - mod;
 };
-/** Máscara visual: `000.000.000-00` (máx. 11 dígitos). */
+// Mask cpf XXX.XXX.XXX-XX
 const formatCpfMasked = (raw) => {
     const d = (0, exports.cpfDigitsOnly)(raw).slice(0, 11);
     if (d.length <= 3)
@@ -27,6 +27,7 @@ const formatCpfMasked = (raw) => {
     return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`;
 };
 exports.formatCpfMasked = formatCpfMasked;
+// Validate cpf
 const isValidCpf = (raw) => {
     const cpf = onlyDigits(raw);
     if (cpf.length !== 11)

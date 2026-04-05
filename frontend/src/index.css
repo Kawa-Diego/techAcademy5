@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-/*
-  Um único eixo de rolagem vertical: evita html e body rolarem ao mesmo tempo
-  (duas barras à direita). O body é o contêiner de scroll; html fica fixo em altura.
-*/
 @layer base {
   html {
     height: 100%;
@@ -13,6 +9,7 @@
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    font-family: 'Nata Sans', ui-sans-serif, system-ui, sans-serif;
   }
   #root {
     min-height: 100%;
@@ -117,6 +114,11 @@
   }
   .order-item-row {
     @apply grid gap-3 rounded-xl border-2 border-amber-500/35 bg-zinc-950/50 p-4 sm:grid-cols-[2fr_1fr_auto] sm:items-end;
+  }
+
+  /* Página inicial: tipografia Changa One (bloco completo) */
+  .font-changa-landing {
+    font-family: 'Changa One', ui-sans-serif, sans-serif;
   }
 
   /* Modais de login e cadastro: cartão escuro semitransparente + inputs legíveis */

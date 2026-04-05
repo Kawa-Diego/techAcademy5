@@ -112,7 +112,7 @@ export const AuthProvider = ({
 
   const updateProfile = useCallback(async (payload: UpdateUserPayload) => {
     const t = loadToken();
-    if (t === null) throw new Error('Sessão expirada');
+    if (t === null) throw new Error('Session expired');
     const next = await httpJson<UserPublic>(
       '/users/me',
       { method: 'PATCH', body: JSON.stringify(payload) },
@@ -123,7 +123,7 @@ export const AuthProvider = ({
 
   const deleteAccount = useCallback(async (): Promise<void> => {
     const t = loadToken();
-    if (t === null) throw new Error('Sessão expirada');
+    if (t === null) throw new Error('Session expired');
     await httpJson<undefined>(
       '/users/me',
       { method: 'DELETE' },
@@ -166,6 +166,6 @@ export const AuthProvider = ({
 
 export const useAuth = (): AuthContextValue => {
   const v = useContext(AuthContext);
-  if (v === null) throw new Error('AuthProvider é obrigatório');
+  if (v === null) throw new Error('AuthProvider is required');
   return v;
 };

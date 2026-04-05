@@ -39,11 +39,11 @@ export const OrderItemsEditor = ({
 
   return (
     <div className="stack">
-      <h2>Itens</h2>
+      <h2>Items</h2>
       {items.map((row, idx) => (
         <div key={idx} className="order-item-row">
           <SelectField
-            label="Produto"
+            label="Product"
             name={`product-${String(idx)}`}
             value={row.productId}
             onChange={(e) =>
@@ -53,7 +53,7 @@ export const OrderItemsEditor = ({
             required
           />
           <TextField
-            label="Quantidade"
+            label="Quantity"
             type="number"
             min={1}
             value={String(row.quantity)}
@@ -66,12 +66,12 @@ export const OrderItemsEditor = ({
             required
           />
           <Button type="button" variant="danger" onClick={() => removeRow(idx)}>
-            Remover
+            Remove
           </Button>
         </div>
       ))}
       <Button type="button" variant="secondary" onClick={addRow}>
-        Adicionar item
+        Add item
       </Button>
     </div>
   );

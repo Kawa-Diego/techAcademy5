@@ -25,7 +25,7 @@ export const ProductListPage = (): React.ReactElement => {
       setData(res);
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Falha ao listar');
+      else setError('Failed to load list');
     }
   }, [token, page]);
 
@@ -35,13 +35,13 @@ export const ProductListPage = (): React.ReactElement => {
 
   const remove = async (id: string) => {
     if (token === null) return;
-    if (!window.confirm('Excluir produto?')) return;
+    if (!window.confirm('Delete product?')) return;
     try {
       await httpJson<void>(`/products/${id}`, { method: 'DELETE' }, token);
       await load();
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Erro ao excluir');
+      else setError('Failed to delete');
     }
   };
 
@@ -59,21 +59,21 @@ export const ProductListPage = (): React.ReactElement => {
           <span className="text-slate-400">—</span>
         ),
     },
-    { header: 'Nome', render: (r) => r.name },
-    { header: 'Preço', render: (r) => formatCents(r.priceCents) },
-    { header: 'Estoque', render: (r) => String(r.stockQuantity) },
-    { header: 'Categoria (id)', render: (r) => r.categoryId },
+    { header: 'Name', render: (r) => r.name },
+    { header: 'Price', render: (r) => formatCents(r.priceCents) },
+    { header: 'Stock', render: (r) => String(r.stockQuantity) },
+    { header: 'Category (id)', render: (r) => r.categoryId },
     {
-      header: 'Ações',
+      header: 'Actions',
       render: (r: Product) => (
         <span className="row-actions">
-          <Link to={`/products/${r.id}/edit`}>Editar</Link>
+          <Link to={`/products/${r.id}/edit`}>Edit</Link>
           <button
             type="button"
             className="link-btn"
             onClick={() => void remove(r.id)}
           >
-            Excluir
+            Delete
           </button>
         </span>
       ),
@@ -86,9 +86,9 @@ export const ProductListPage = (): React.ReactElement => {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Produtos 3D</h1>
+        <h1>3D products</h1>
         <Link to="/products/new" className="btn btn-primary">
-          Novo produto
+          New product
         </Link>
       </div>
       <ErrorBanner message={error} />

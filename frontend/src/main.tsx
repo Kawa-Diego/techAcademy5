@@ -4,7 +4,7 @@ import { App } from './App';
 import './index.css';
 
 const root = document.getElementById('root');
-if (root === null) throw new Error('#root ausente');
+if (root === null) throw new Error('#root element missing');
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>

@@ -9,53 +9,53 @@ const publicNavigation = (): SiteNavigationResponse => ({
   nav: [
     {
       id: 'sobre',
-      label: 'Sobre',
-      path: '/#sobre',
+      label: 'About',
+      path: '/#about',
       kind: 'internal',
     },
     {
       id: 'vitrine',
-      label: 'Produtos',
+      label: 'Products',
       path: '/vitrine',
       kind: 'internal',
     },
     {
       id: 'contato',
-      label: 'Contato',
-      path: '/#contato',
+      label: 'Contact',
+      path: '/#contact',
       kind: 'internal',
     },
   ],
   footer: {
     tagline:
-      'Elevando sua experiência de compras para o próximo nível.',
+      'Elevating your shopping experience to the next level.',
     linkGroups: [
       {
-        title: 'Links úteis',
+        title: 'Useful links',
         links: [
           {
             id: 'sobre',
-            label: 'Sobre nós',
-            path: '/#sobre',
+            label: 'About us',
+            path: '/#about',
             kind: 'internal',
           },
           {
             id: 'vitrine',
-            label: 'Produtos',
+            label: 'Products',
             path: '/vitrine',
             kind: 'internal',
           },
           {
             id: 'contato',
-            label: 'Contato',
-            path: '/#contato',
+            label: 'Contact',
+            path: '/#contact',
             kind: 'internal',
           },
         ],
       },
     ],
     whatsappUrl:
-      'https://wa.me/0000000000?text=Olá, gostaria de saber mais sobre os produtos.',
+      'https://wa.me/0000000000?text=Hi,%20I%20would%20like%20to%20know%20more%20about%20your%20products.',
     whatsappDisplay: '(00) 0000-0000',
     social: [
       {
@@ -74,12 +74,12 @@ const publicNavigation = (): SiteNavigationResponse => ({
 
 const appMenuForRole = (role: UserRole): AppMenuResponse => {
   const adminItems: AppMenuResponse['items'] = [
-    { label: 'Início', path: '/dashboard' },
-    { label: 'Usuários', path: '/users' },
-    { label: 'Categorias', path: '/categories' },
-    { label: 'Produtos', path: '/products' },
-    { label: 'Pedidos', path: '/orders' },
-    { label: 'Minha conta', path: '/profile/edit' },
+    { label: 'Home', path: '/dashboard' },
+    { label: 'Users', path: '/users' },
+    { label: 'Categories', path: '/categories' },
+    { label: 'Products', path: '/products' },
+    { label: 'Orders', path: '/orders' },
+    { label: 'My account', path: '/profile/edit' },
   ];
   if (role === 'ADMIN') {
     return {
@@ -90,8 +90,8 @@ const appMenuForRole = (role: UserRole): AppMenuResponse => {
   return {
     brandHome: '/orders',
     items: [
-      { label: 'Pedidos', path: '/orders' },
-      { label: 'Minha conta', path: '/profile/edit' },
+      { label: 'Orders', path: '/orders' },
+      { label: 'My account', path: '/profile/edit' },
     ],
   };
 };

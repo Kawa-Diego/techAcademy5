@@ -17,12 +17,12 @@ const calcCheck = (base: string, factor: number): number => {
 
 export const assertValidCpf = (raw: string): void => {
   const cpf = onlyDigits(raw);
-  if (cpf.length !== 11) throw new AppError(400, 'CPF inválido');
-  if (allSameDigit(cpf)) throw new AppError(400, 'CPF inválido');
+  if (cpf.length !== 11) throw new AppError(400, 'Invalid CPF');
+  if (allSameDigit(cpf)) throw new AppError(400, 'Invalid CPF');
   const d1 = calcCheck(cpf.slice(0, 9), 10);
   const d2 = calcCheck(cpf.slice(0, 9) + String(d1), 11);
   if (d1 !== Number(cpf[9]) || d2 !== Number(cpf[10])) {
-    throw new AppError(400, 'CPF inválido');
+    throw new AppError(400, 'Invalid CPF');
   }
 };
 

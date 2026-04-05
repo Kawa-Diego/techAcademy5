@@ -20,13 +20,17 @@ import { ProductListPage } from "./pages/products/ProductListPage";
 import { ProductNewPage } from "./pages/products/ProductNewPage";
 import { ProductEditPage } from "./pages/products/ProductEditPage";
 import { OrderListPage } from "./pages/orders/OrderListPage";
-import { OrderNewPage } from "./pages/orders/OrderNewPage";
 import { OrderEditPage } from "./pages/orders/OrderEditPage";
 
+// App component for the ecommerce web application with routes and context providers
 export const App = (): React.ReactElement => (
+  // BrowserRouter for the ecommerce web application with routes and context providers
+  // AuthProvider for the ecommerce web application with routes and context providers
+  // Routes for the ecommerce web application with routes and context providers
   <BrowserRouter>
     <AuthProvider>
       <Routes>
+        // PublicLayout for the ecommerce web application with routes and context providers
         <Route element={<PublicLayout />}>
           <Route path="/" element={<LandingHome />} />
           <Route path="/sobre" element={<LandingSobre />} />
@@ -52,7 +56,6 @@ export const App = (): React.ReactElement => (
               <Route path="/products" element={<ProductListPage />} />
               <Route path="/products/new" element={<ProductNewPage />} />
               <Route path="/products/:id/edit" element={<ProductEditPage />} />
-              <Route path="/orders/new" element={<OrderNewPage />} />
               <Route path="/orders/:id/edit" element={<OrderEditPage />} />
             </Route>
           </Route>

@@ -81,11 +81,11 @@ export const PublicFooter = ({
             onClick={onLoginClick}
             className="text-left text-slate-300 transition-colors hover:text-white"
           >
-            Entrar
+            Sign in
           </button>
         </div>
         <div>
-          <h4 className="mb-6 font-bold text-white">Redes sociais</h4>
+          <h4 className="mb-6 font-bold text-white">Social</h4>
           <div className="flex gap-4">
             {footer.social.map((s) => (
               <a

@@ -7,7 +7,7 @@ import { ErrorBanner } from '../../components/ui/ErrorBanner';
 import { PaginationControls } from '../../components/ui/PaginationControls';
 
 const formatMoney = (cents: number): string =>
-  (cents / 100).toLocaleString('pt-BR', {
+  (cents / 100).toLocaleString('en-US', {
     style: 'currency',
     currency: 'BRL',
   });
@@ -31,7 +31,7 @@ export const OrderListPage = (): ReactElement => {
       setList(res);
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Falha ao carregar pedidos');
+      else setError('Failed to load orders');
     }
   }, [token, page]);
 
@@ -59,7 +59,7 @@ export const OrderListPage = (): ReactElement => {
       await load();
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Não foi possível solicitar reembolso');
+      else setError('Could not request refund');
     } finally {
       setBusyKey(null);
     }
@@ -82,7 +82,7 @@ export const OrderListPage = (): ReactElement => {
       await load();
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Não foi possível confirmar reembolso');
+      else setError('Could not confirm refund');
     } finally {
       setBusyKey(null);
     }
@@ -95,19 +95,14 @@ export const OrderListPage = (): ReactElement => {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Pedidos</h1>
-        {isAdmin ? (
-          <Link to="/orders/new" className="btn btn-primary">
-            Novo pedido
-          </Link>
-        ) : null}
+        <h1>Orders</h1>
       </div>
       <ErrorBanner message={error} />
       {list === null && error === null ? (
-        <p className="text-slate-400">Carregando…</p>
+        <p className="text-slate-400">Loading…</p>
       ) : null}
       {orders.length === 0 && list !== null ? (
-        <p className="text-slate-400">Nenhum pedido para exibir.</p>
+        <p className="text-slate-400">No orders to show.</p>
       ) : null}
       <div className="flex flex-col gap-6">
         {orders.map((o) => (
@@ -118,11 +113,11 @@ export const OrderListPage = (): ReactElement => {
             <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2 border-b border-white/10 pb-3">
               <div>
                 <h2 className="text-lg font-semibold text-white">
-                  Pedido{' '}
+                  Order{' '}
                   <span className="font-mono text-amber-200/90">{o.id.slice(0, 8)}…</span>
                 </h2>
                 <p className="text-sm text-slate-400">
-                  {new Date(o.createdAt).toLocaleString('pt-BR')} ·{' '}
+                  {new Date(o.createdAt).toLocaleString('en-US')} ·{' '}
                   <span className="text-slate-300">{o.status}</span>
                 </p>
               </div>
@@ -136,7 +131,7 @@ export const OrderListPage = (): ReactElement => {
               ) : null}
             </div>
             {o.notes.trim().length > 0 ? (
-              <p className="mb-3 text-sm text-slate-400">Obs.: {o.notes}</p>
+              <p className="mb-3 text-sm text-slate-400">Notes: {o.notes}</p>
             ) : null}
             <ul className="space-y-4">
               {o.items.map((it) => {
@@ -151,7 +146,7 @@ export const OrderListPage = (): ReactElement => {
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <p className="font-medium text-white">
-                          {it.productName ?? 'Produto'}{' '}
+                          {it.productName ?? 'Product'}{' '}
                           <span className="font-mono text-sm text-slate-500">
                             ({it.productId.slice(0, 8)}…)
                           </span>
@@ -162,9 +157,9 @@ export const OrderListPage = (): ReactElement => {
                       </div>
                       <div className="text-right text-sm">
                         {refunded ? (
-                          <span className="text-emerald-400">Reembolso confirmado</span>
+                          <span className="text-emerald-400">Refund confirmed</span>
                         ) : refundPending ? (
-                          <span className="text-amber-300">Reembolso solicitado</span>
+                          <span className="text-amber-300">Refund requested</span>
                         ) : !isAdmin ? (
                           <RefundRequestBlock
                             busy={busyKey === `${o.id}-${it.id}-req`}
@@ -178,7 +173,7 @@ export const OrderListPage = (): ReactElement => {
                             onClick={() => void confirmRefund(o.id, it.id)}
                             className="mt-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-emerald-600 disabled:opacity-50"
                           >
-                            Confirmar reembolso
+                            Confirm refund
                           </button>
                         ) : null}
                       </div>
@@ -193,7 +188,7 @@ export const OrderListPage = (): ReactElement => {
                   to={`/orders/${o.id}/edit`}
                   className="text-sm text-indigo-400 hover:text-indigo-300"
                 >
-                  Editar pedido
+                  Edit order
                 </Link>
               </div>
             ) : null}
@@ -228,7 +223,7 @@ const RefundRequestBlock = ({
           onChange={(e) => setChecked(e.target.checked)}
           className="rounded border-slate-500"
         />
-        Confirmo a solicitação de reembolso
+        I confirm the refund request
       </label>
       <button
         type="button"
@@ -236,7 +231,7 @@ const RefundRequestBlock = ({
         onClick={onConfirm}
         className="rounded-lg border border-amber-500/40 bg-amber-950/40 px-3 py-1.5 text-sm font-medium text-amber-100 transition hover:bg-amber-900/50 disabled:opacity-40"
       >
-        {busy ? 'Enviando…' : 'Solicitar reembolso'}
+        {busy ? 'Sending…' : 'Request refund'}
       </button>
     </div>
   );

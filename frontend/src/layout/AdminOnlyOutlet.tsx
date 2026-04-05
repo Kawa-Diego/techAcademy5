@@ -7,7 +7,7 @@ export const AdminOnlyOutlet = (): ReactElement => {
   if (loading) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center text-slate-500">
-        Carregando…
+        Loading…
       </div>
     );
   }

@@ -1,3 +1,4 @@
+// Product type 
 export type Product = {
   readonly id: string;
   readonly name: string;
@@ -11,6 +12,7 @@ export type Product = {
   readonly updatedAt: string;
 };
 
+// Create product payload type
 export type CreateProductPayload = {
   readonly name: string;
   readonly description: string;
@@ -21,11 +23,12 @@ export type CreateProductPayload = {
   readonly stockQuantity: number;
 };
 
-/** Produto exposto na vitrine pública (sem autenticação). */
+// Public product type
 export type PublicProduct = Product & {
   readonly categoryName: string;
-  /** Indisponível para compra (estoque zero ou regra de catálogo único). */
+  // Out of stock flag
   readonly outOfStock: boolean;
 };
 
+// Update product payload type
 export type UpdateProductPayload = CreateProductPayload;

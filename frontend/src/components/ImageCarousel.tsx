@@ -58,7 +58,7 @@ export const ImageCarousel = ({
       <div
         className={`flex items-center justify-center bg-zinc-800 text-slate-500 ${className}`}
       >
-        Sem imagem
+        No image
       </div>
     );
   }
@@ -83,7 +83,7 @@ export const ImageCarousel = ({
             type="button"
             onClick={prev}
             className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white shadow-md backdrop-blur-sm transition hover:bg-black/70"
-            aria-label="Imagem anterior"
+            aria-label="Previous image"
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
@@ -91,7 +91,7 @@ export const ImageCarousel = ({
             type="button"
             onClick={next}
             className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white shadow-md backdrop-blur-sm transition hover:bg-black/70"
-            aria-label="Próxima imagem"
+            aria-label="Next image"
           >
             <ChevronRight className="h-6 w-6" />
           </button>

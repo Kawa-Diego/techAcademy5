@@ -17,7 +17,6 @@ export type LoginPayload = {
     readonly email: string;
     readonly password: string;
 };
-/** Redefinição de senha por e-mail (sem token por e-mail; uso interno / demos). */
 export type ForgotPasswordPayload = {
     readonly email: string;
     readonly newPassword: string;

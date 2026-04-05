@@ -12,7 +12,7 @@ import {
 
 const userId = (req: { authUserId?: string }): string => {
   const id = req.authUserId;
-  if (!id) throw new AppError(401, 'Não autenticado');
+  if (!id) throw new AppError(401, 'Not authenticated');
   return id;
 };
 
@@ -21,7 +21,7 @@ export class AuthController {
 
   public readonly get = asyncRoute(async (req: Request, res) => {
     const role = req.authRole;
-    if (role === undefined) throw new AppError(401, 'Não autenticado');
+    if (role === undefined) throw new AppError(401, 'Not authenticated');
     this.ok(res, { ok: true, service: 'auth', role });
   });
 

@@ -52,7 +52,7 @@ export class CategoryService {
 
   private async requireCategory(id: string) {
     const row = await this.categories.findById(id);
-    if (!row) throw new AppError(404, 'Categoria não encontrada');
+    if (!row) throw new AppError(404, 'Category not found');
     return row;
   }
 }

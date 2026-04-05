@@ -17,17 +17,17 @@ export const PaginationControls = ({
         disabled={page <= 1}
         onClick={() => onPageChange(page - 1)}
       >
-        Anterior
+        Previous
       </Button>
       <span className="pagination-meta">
-        Página {page} de {totalPages}
+        Page {page} of {totalPages}
       </span>
       <Button
         variant="secondary"
         disabled={page >= totalPages}
         onClick={() => onPageChange(page + 1)}
       >
-        Próxima
+        Next
       </Button>
     </div>
   );

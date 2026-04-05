@@ -70,9 +70,9 @@ export class OrderService {
         user: { select: { id: true, name: true, email: true } },
       },
     });
-    if (row === null) throw new AppError(404, 'Pedido não encontrado');
+    if (row === null) throw new AppError(404, 'Order not found');
     if (role !== 'ADMIN' && row.userId !== authUserId) {
-      throw new AppError(403, 'Acesso negado');
+      throw new AppError(403, 'Access denied');
     }
     const items = await this.orders.findItems(id);
     return toOrder(row, items, {
@@ -124,21 +124,14 @@ export class OrderService {
     readonly actingUserId: string;
   }): Promise<Order> {
     const bundle = await prisma.$transaction(async (tx) => {
-      const catalogCount = await tx.product.count();
       const resolved: ResolvedItem[] = [];
       for (const item of params.items) {
         const product = await tx.product.findUnique({
           where: { id: item.productId },
         });
-        if (product === null) throw new AppError(404, 'Produto não encontrado');
-        if (catalogCount === 1) {
-          throw new AppError(
-            400,
-            'Produto fora de estoque (catálogo único indisponível para compra)'
-          );
-        }
+        if (product === null) throw new AppError(404, 'Product not found');
         if (product.stockQuantity < item.quantity) {
-          throw new AppError(400, 'Produto fora de estoque');
+          throw new AppError(400, 'Product out of stock');
         }
         resolved.push({
           productId: product.id,
@@ -290,8 +283,8 @@ export class OrderService {
         userId,
         userName:
           userId === null
-            ? 'Pedidos sem usuário vinculado'
-            : (user?.name ?? 'Usuário'),
+            ? 'Orders with no linked user'
+            : (user?.name ?? 'User'),
         userEmail: user?.email ?? null,
         orderCount,
         products: [...productMap.entries()]
@@ -301,7 +294,7 @@ export class OrderService {
             totalQuantity: v.qty,
           }))
           .sort((a, b) =>
-            a.productName.localeCompare(b.productName, 'pt-BR')
+            a.productName.localeCompare(b.productName, 'en')
           ),
       });
     }
@@ -309,7 +302,7 @@ export class OrderService {
     entries.sort((a, b) => {
       if (a.userId === null) return 1;
       if (b.userId === null) return -1;
-      return a.userName.localeCompare(b.userName, 'pt-BR');
+      return a.userName.localeCompare(b.userName, 'en');
     });
 
     return entries;
@@ -323,7 +316,6 @@ export class OrderService {
     await this.requireOrder(id);
     const oldItems = await this.orders.findItems(id);
     const bundle = await prisma.$transaction(async (tx) => {
-      const catalogCount = await tx.product.count();
       for (const oi of oldItems) {
         await tx.product.update({
           where: { id: oi.productId },
@@ -336,15 +328,9 @@ export class OrderService {
         const product = await tx.product.findUnique({
           where: { id: item.productId },
         });
-        if (product === null) throw new AppError(404, 'Produto não encontrado');
-        if (catalogCount === 1) {
-          throw new AppError(
-            400,
-            'Produto fora de estoque (catálogo único indisponível para compra)'
-          );
-        }
+        if (product === null) throw new AppError(404, 'Product not found');
         if (product.stockQuantity < item.quantity) {
-          throw new AppError(400, 'Produto fora de estoque');
+          throw new AppError(400, 'Product out of stock');
         }
         resolved.push({
           productId: product.id,
@@ -390,7 +376,7 @@ export class OrderService {
         user: { select: { id: true, name: true, email: true } },
       },
     });
-    if (fresh === null) throw new AppError(404, 'Pedido não encontrado');
+    if (fresh === null) throw new AppError(404, 'Order not found');
     const itemsWithProduct = await this.orders.findItems(id);
     return toOrder(fresh, itemsWithProduct, {
       userId: fresh.userId,
@@ -425,18 +411,18 @@ export class OrderService {
         user: { select: { id: true, name: true, email: true } },
       },
     });
-    if (row === null) throw new AppError(404, 'Pedido não encontrado');
-    if (row.userId !== userId) throw new AppError(403, 'Acesso negado');
+    if (row === null) throw new AppError(404, 'Order not found');
+    if (row.userId !== userId) throw new AppError(403, 'Access denied');
 
     const item = await prisma.orderItem.findFirst({
       where: { id: itemId, orderId },
     });
-    if (item === null) throw new AppError(404, 'Item não encontrado');
+    if (item === null) throw new AppError(404, 'Item not found');
     if (item.refundConfirmedAt !== null) {
-      throw new AppError(400, 'Reembolso já confirmado para este item');
+      throw new AppError(400, 'Refund already confirmed for this item');
     }
     if (item.refundRequestedAt !== null) {
-      throw new AppError(400, 'Reembolso já solicitado para este item');
+      throw new AppError(400, 'Refund already requested for this item');
     }
 
     await prisma.orderItem.update({
@@ -469,17 +455,17 @@ export class OrderService {
         user: { select: { id: true, name: true, email: true } },
       },
     });
-    if (row === null) throw new AppError(404, 'Pedido não encontrado');
+    if (row === null) throw new AppError(404, 'Order not found');
 
     const item = await prisma.orderItem.findFirst({
       where: { id: itemId, orderId },
     });
-    if (item === null) throw new AppError(404, 'Item não encontrado');
+    if (item === null) throw new AppError(404, 'Item not found');
     if (item.refundRequestedAt === null) {
-      throw new AppError(400, 'Nenhuma solicitação de reembolso para este item');
+      throw new AppError(400, 'No refund request for this item');
     }
     if (item.refundConfirmedAt !== null) {
-      throw new AppError(400, 'Reembolso já confirmado');
+      throw new AppError(400, 'Refund already confirmed');
     }
 
     await prisma.$transaction(async (tx) => {
@@ -507,7 +493,7 @@ export class OrderService {
         user: { select: { id: true, name: true, email: true } },
       },
     });
-    if (fresh === null) throw new AppError(404, 'Pedido não encontrado');
+    if (fresh === null) throw new AppError(404, 'Order not found');
     return toOrder(fresh, items, {
       userId: fresh.userId,
       userName: fresh.user?.name ?? null,
@@ -517,7 +503,7 @@ export class OrderService {
 
   private async requireOrder(id: string): Promise<DbOrder> {
     const row = await this.orders.findById(id);
-    if (!row) throw new AppError(404, 'Pedido não encontrado');
+    if (!row) throw new AppError(404, 'Order not found');
     return row;
   }
 }

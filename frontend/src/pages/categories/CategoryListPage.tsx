@@ -26,7 +26,7 @@ export const CategoryListPage = (): React.ReactElement => {
       setData(res);
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Falha ao listar');
+      else setError('Failed to load list');
     }
   }, [token, page]);
 
@@ -36,32 +36,32 @@ export const CategoryListPage = (): React.ReactElement => {
 
   const remove = async (cid: string) => {
     if (token === null) return;
-    if (!window.confirm('Excluir categoria?')) return;
+    if (!window.confirm('Delete category?')) return;
     try {
       await httpJson<void>(`/categories/${cid}`, { method: 'DELETE' }, token);
       await load();
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Erro ao excluir');
+      else setError('Failed to delete');
     }
   };
 
   const columns: TableColumn<Category>[] = [
-    { header: 'Nome', render: (r) => r.name },
-    { header: 'Descrição', render: (r) => r.description },
+    { header: 'Name', render: (r) => r.name },
+    { header: 'Description', render: (r) => r.description },
     ...(isAdmin
       ? [
           {
-            header: 'Ações',
+            header: 'Actions',
             render: (r: Category) => (
               <span className="row-actions">
-                <Link to={`/categories/${r.id}/edit`}>Editar</Link>
+                <Link to={`/categories/${r.id}/edit`}>Edit</Link>
                 <button
                   type="button"
                   className="link-btn"
                   onClick={() => void remove(r.id)}
                 >
-                  Excluir
+                  Delete
                 </button>
               </span>
             ),
@@ -76,10 +76,10 @@ export const CategoryListPage = (): React.ReactElement => {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Categorias</h1>
+        <h1>Categories</h1>
         {isAdmin ? (
           <Link to="/categories/new" className="btn btn-primary">
-            Nova categoria
+            New category
           </Link>
         ) : null}
       </div>

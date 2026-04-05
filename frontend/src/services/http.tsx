@@ -1,34 +1,43 @@
+// Json value type for http
 type JsonPrimitive = string | number | boolean | null;
 
+// Json object type for http
 type JsonObject = { readonly [key: string]: JsonValue };
 
+// Json value type for http
 type JsonValue = JsonPrimitive | readonly JsonValue[] | JsonObject;
 
+// Trim api url for http
 const trimApi = (raw: string): string => raw.replace(/\/$/u, '');
 
+// From env for http
 const fromEnv = (): string => {
   const v = import.meta.env.VITE_API_URL;
   return typeof v === 'string' ? v : '';
 };
 
+// Api base url for http
 export const apiBaseUrl = (): string => {
   const base = fromEnv();
   return base.length > 0 ? trimApi(base) : '/api';
 };
 
+// Api request error for http
 export class ApiRequestError extends Error {
   public readonly status: number;
-
+  // Status for api request error
   public constructor(status: number, message: string) {
     super(message);
     this.status = status;
   }
 }
 
+// Parse json for http
 const parseJson = (text: string): JsonValue => {
   return JSON.parse(text) as JsonValue;
 };
 
+// Try parse json for http
 const tryParseJson = (text: string): JsonValue | null => {
   if (text.length === 0) return null;
   try {
@@ -38,14 +47,16 @@ const tryParseJson = (text: string): JsonValue | null => {
   }
 };
 
+// Read message for http
 const readMessage = (value: JsonValue): string => {
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const msg = Reflect.get(value, 'message');
     if (typeof msg === 'string') return msg;
   }
-  return 'Erro na requisição';
+  return 'Request error';
 };
 
+// Merge headers for http
 const mergeHeaders = (
   base: RequestInit,
   token: string | null
@@ -61,23 +72,25 @@ const mergeHeaders = (
   return headers;
 };
 
+// Handle response for http
 const handleResponse = (res: Response, text: string): JsonValue | undefined => {
   if (res.status === 204) return undefined;
   const body = tryParseJson(text);
   if (!res.ok) {
     const msg =
-      body === null ? `Erro HTTP ${String(res.status)}` : readMessage(body);
+      body === null ? `HTTP error ${String(res.status)}` : readMessage(body);
     throw new ApiRequestError(res.status, msg);
   }
   if (body === null) {
     throw new ApiRequestError(
       res.status,
-      'Resposta inválida do servidor (não é JSON).'
+      'Invalid server response (not JSON).'
     );
   }
   return body;
 };
 
+// Http json for http
 export const httpJson = async <T,>(
   path: string,
   init: RequestInit,
@@ -90,7 +103,7 @@ export const httpJson = async <T,>(
   return handleResponse(res, text) as T;
 };
 
-/** Upload multipart (ex.: imagens de produto). Não define Content-Type (boundary automático). */
+// Http form data for http multipart
 export const httpFormData = async <T,>(
   path: string,
   formData: FormData,
@@ -109,12 +122,12 @@ export const httpFormData = async <T,>(
   } catch {
     throw new ApiRequestError(
       0,
-      'Sem conexão com o servidor. Inicie o backend (ex.: porta 3333) e tente de novo.'
+      'No connection to the server. Start the backend (e.g. port 3333) and try again.'
     );
   }
 };
 
-/** URL de arquivo servido pelo backend (`/uploads/...`). O Vite faz proxy de `/uploads`. */
+// Media url for http media url
 export const mediaUrl = (path: string): string => {
   if (path.startsWith('http')) return path;
   return path.startsWith('/') ? path : `/${path}`;

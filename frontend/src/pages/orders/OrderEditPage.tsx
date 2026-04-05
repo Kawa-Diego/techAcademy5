@@ -59,7 +59,7 @@ export const OrderEditPage = (): React.ReactElement => {
         setItems(row.items.map((i) => ({ productId: i.productId, quantity: i.quantity })));
       } catch (e) {
         if (e instanceof ApiRequestError) setError(e.message);
-        else setError('Erro ao carregar');
+        else setError('Failed to load');
       }
     };
     void run();
@@ -71,7 +71,7 @@ export const OrderEditPage = (): React.ReactElement => {
     setError(null);
     const clean = items.filter((i) => i.productId.length > 0 && i.quantity > 0);
     if (clean.length === 0) {
-      setError('Inclua ao menos um item válido');
+      setError('Include at least one valid line item');
       return;
     }
     try {
@@ -93,13 +93,13 @@ export const OrderEditPage = (): React.ReactElement => {
       navigate('/orders');
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Erro ao salvar');
+      else setError('Failed to save');
     }
   };
 
   return (
     <div className="page">
-      <h1>Editar pedido</h1>
+      <h1>Edit order</h1>
       <ErrorBanner message={error} />
       <form onSubmit={(e) => void onSubmit(e)} className="stack narrow">
         <SelectField
@@ -110,10 +110,10 @@ export const OrderEditPage = (): React.ReactElement => {
           options={STATUSES.map((s) => ({ value: s, label: s }))}
           required
         />
-        <TextAreaField label="Observações" value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
+        <TextAreaField label="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
         <OrderItemsEditor items={items} products={products} onChange={setItems} />
         <FormActions>
-          <Button type="submit">Salvar</Button>
+          <Button type="submit">Save</Button>
         </FormActions>
       </form>
     </div>

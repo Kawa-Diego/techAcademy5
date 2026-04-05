@@ -38,7 +38,7 @@ const forgotPasswordSchema = z.object({
 
 const fail = (error: z.ZodError): never => {
   const first = error.issues[0];
-  const msg = first?.message ?? 'Payload inválido';
+  const msg = first?.message ?? 'Invalid payload';
   throw new AppError(400, msg);
 };
 

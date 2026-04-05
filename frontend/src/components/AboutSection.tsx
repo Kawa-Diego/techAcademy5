@@ -28,20 +28,20 @@ export const AboutSection = ({ className = '' }: Props): ReactElement => {
   return (
     <section
       ref={rootRef}
-      id="sobre"
+      id="about"
       className={`scroll-mt-24 px-4 py-16 sm:px-6 lg:scroll-mt-28 lg:py-24 ${className}`.trim()}
-      aria-labelledby="sobre-heading"
+      aria-labelledby="about-heading"
     >
       <div className="mx-auto max-w-7xl">
         <div className="rounded-2xl border-2 border-amber-500/45 bg-zinc-950/55 p-6 shadow-[0_0_32px_-8px_rgba(245,158,11,0.18)] sm:p-10 lg:p-12">
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="flex flex-col gap-6">
               <h2
-                id="sobre-heading"
+                id="about-heading"
                 data-about-animate
                 className="text-3xl font-bold tracking-tight text-slate-50 lg:text-4xl xl:text-5xl"
               >
-                Sobre a nossa loja
+                About our store
               </h2>
               <div
                 data-about-animate
@@ -51,18 +51,16 @@ export const AboutSection = ({ className = '' }: Props): ReactElement => {
                 data-about-animate
                 className="text-lg leading-relaxed text-slate-300"
               >
-                Nossa missão é trazer para você os melhores produtos com a melhor
-                experiência de compra possível. Trabalhamos com marcas exclusivas e
-                selecionadas a dedo para garantir qualidade, durabilidade e design
-                superior.
+                Our mission is to bring you the best products with the best
+                shopping experience possible. We work with exclusive brands,
+                hand-picked to ensure quality, durability, and superior design.
               </p>
               <p
                 data-about-animate
                 className="text-lg leading-relaxed text-slate-300"
               >
-                Estamos no mercado para revolucionar a forma como você compra
-                online, oferecendo atendimento personalizado e entrega rápida em
-                todo o país.
+                We are here to change how you shop online, with personalized
+                service and fast delivery nationwide.
               </p>
             </div>
             <div data-about-animate className="relative">

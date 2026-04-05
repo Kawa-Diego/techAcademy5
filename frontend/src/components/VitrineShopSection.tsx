@@ -7,7 +7,7 @@ import { ApiRequestError, httpJson } from '../services/http';
 import type { PublicLayoutOutletContext } from '@ecommerce/shared';
 
 const formatPrice = (cents: number): string =>
-  (cents / 100).toLocaleString('pt-BR', {
+  (cents / 100).toLocaleString('en-US', {
     style: 'currency',
     currency: 'BRL',
   });
@@ -47,7 +47,7 @@ export const VitrineShopSection = ({
         setResult(res);
       } catch (e) {
         if (e instanceof ApiRequestError) setError(e.message);
-        else setError('Não foi possível carregar os produtos');
+        else setError('Could not load products');
       }
     })();
   }, [categoriaId]);
@@ -80,24 +80,24 @@ export const VitrineShopSection = ({
 
   return (
     <section
-      id="coleção"
+      id="collection"
       className="relative px-4 pb-20 pt-8 sm:px-6 lg:px-8 lg:pb-28 lg:pt-12"
     >
       {showHeading ? (
         <div className="mx-auto mb-10 max-w-7xl text-center">
           <h2 className="mb-2 text-3xl font-bold tracking-tight text-slate-50 lg:text-4xl">
-            Nossa coleção
+            Our collection
           </h2>
           <p className="text-slate-400">
-            Escolha uma categoria e explore os produtos
+            Pick a category and explore the products
           </p>
         </div>
       ) : (
         <div className="mx-auto mb-8 max-w-7xl text-center lg:pt-8">
           <h1 className="mb-2 text-3xl font-bold tracking-tight text-slate-50 lg:text-4xl">
-            Vitrine
+            Shop
           </h1>
-          <p className="text-slate-400">Filtre por categoria e role para ver todas</p>
+          <p className="text-slate-400">Filter by category and scroll to see all</p>
         </div>
       )}
 
@@ -115,7 +115,7 @@ export const VitrineShopSection = ({
                 : 'border-amber-500/35 bg-zinc-950/60 text-slate-300 hover:border-amber-400/50 hover:text-amber-100'
             }`}
           >
-            Todas
+            All
           </Link>
           {categories.map((c) => (
             <Link
@@ -142,10 +142,10 @@ export const VitrineShopSection = ({
         ) : null}
 
         {!result ? (
-          <p className="py-16 text-center text-slate-500">Carregando…</p>
+          <p className="py-16 text-center text-slate-500">Loading…</p>
         ) : result.data.length === 0 ? (
           <div className="rounded-xl border-2 border-amber-500/40 bg-zinc-950/50 px-6 py-16 text-center text-slate-400">
-            Nenhum produto nesta categoria.
+            No products in this category.
           </div>
         ) : (
           <div className="rounded-xl border-2 border-amber-500/45 bg-zinc-950/40 p-3 shadow-[0_0_28px_-6px_rgba(245,158,11,0.15)] sm:p-5">
@@ -163,7 +163,7 @@ export const VitrineShopSection = ({
                   <div className="relative aspect-square overflow-hidden bg-zinc-800">
                     {p.outOfStock ? (
                       <div className="absolute right-2 top-2 z-10 rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-md sm:text-xs">
-                        Fora de estoque
+                        Out of stock
                       </div>
                     ) : null}
                     <ImageCarousel

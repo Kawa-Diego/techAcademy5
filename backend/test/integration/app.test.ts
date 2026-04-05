@@ -94,7 +94,7 @@ describe('API e-commerce (dados mockados em memória, sem PostgreSQL)', () => {
       cpf: '1',
     });
     expect(res.status).toBe(400);
-    expect(String(res.body.message ?? '')).toMatch(/nome/i);
+    expect(String(res.body.message ?? '')).toMatch(/name/i);
   });
 
   it('usuário comum não cria categoria (403)', async () => {
@@ -151,7 +151,7 @@ describe('API e-commerce (dados mockados em memória, sem PostgreSQL)', () => {
     expect(res.status).toBe(403);
   });
 
-  it('admin cria produtos (dois itens para evitar bloqueio de catálogo único)', async () => {
+  it('admin cria produto', async () => {
     const res = await request(app)
       .post('/products')
       .set('Authorization', `Bearer ${adminToken}`)
@@ -166,20 +166,6 @@ describe('API e-commerce (dados mockados em memória, sem PostgreSQL)', () => {
       });
     expect(res.status).toBe(201);
     productId = res.body.id as string;
-
-    const res2 = await request(app)
-      .post('/products')
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({
-        name: 'Extra catálogo',
-        description: 'Segundo item',
-        priceCents: 500,
-        model3dUrl: 'https://example.com/extra.glb',
-        imageUrls: ['https://example.com/img2.jpg'],
-        categoryId,
-        stockQuantity: 10,
-      });
-    expect(res2.status).toBe(201);
   });
 
   it('cliente cria pedido autenticado', async () => {

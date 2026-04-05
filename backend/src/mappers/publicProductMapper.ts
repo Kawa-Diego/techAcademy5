@@ -6,15 +6,12 @@ export type ProductWithCategory = DbProduct & {
   readonly category: { readonly name: string };
 };
 
-export const toPublicProduct = (
-  row: ProductWithCategory,
-  ctx: { readonly catalogProductCount: number }
-): PublicProduct => {
+/** `outOfStock` só reflete `stockQuantity` no banco (compra e reembolso confirmado atualizam esse valor). */
+export const toPublicProduct = (row: ProductWithCategory): PublicProduct => {
   const base = toProduct(row);
   return {
     ...base,
     categoryName: row.category.name,
-    outOfStock:
-      ctx.catalogProductCount === 1 || base.stockQuantity <= 0,
+    outOfStock: base.stockQuantity <= 0,
   };
 };

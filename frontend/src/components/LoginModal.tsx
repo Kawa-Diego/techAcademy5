@@ -111,7 +111,7 @@ export const LoginModal = ({
     setFieldError(null);
     setSuccessMessage(null);
     if (!isValidEmail(email)) {
-      setFieldError('E-mail inválido');
+      setFieldError('Invalid email');
       return;
     }
     try {
@@ -133,7 +133,7 @@ export const LoginModal = ({
       });
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Não foi possível entrar.');
+      else setError('Could not sign in.');
     }
   };
 
@@ -142,7 +142,7 @@ export const LoginModal = ({
     setError(null);
     setFieldError(null);
     if (!isValidEmail(email)) {
-      setFieldError('E-mail inválido');
+      setFieldError('Invalid email');
       return;
     }
     if (!isStrongPassword(newPassword)) {
@@ -150,7 +150,7 @@ export const LoginModal = ({
       return;
     }
     if (newPassword !== confirmPassword) {
-      setFieldError('As senhas não conferem');
+      setFieldError('Passwords do not match');
       return;
     }
     try {
@@ -164,11 +164,11 @@ export const LoginModal = ({
       );
       setNewPassword('');
       setConfirmPassword('');
-      setSuccessMessage('Senha atualizada. Faça login com a nova senha.');
+      setSuccessMessage('Password updated. Sign in with your new password.');
       setPanel('login');
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Não foi possível atualizar a senha.');
+      else setError('Could not update password.');
     }
   };
 
@@ -196,7 +196,7 @@ export const LoginModal = ({
           type="button"
           onClick={close}
           className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white/10 hover:text-slate-100"
-          aria-label="Fechar"
+          aria-label="Close"
         >
           <X className="h-5 w-5" />
         </button>
@@ -206,7 +206,7 @@ export const LoginModal = ({
               id="login-title"
               className="mb-6 text-2xl font-bold tracking-tight text-slate-50"
             >
-              Entrar
+              Sign in
             </h2>
             {successMessage ? (
               <p className="ok-banner" role="status">
@@ -220,7 +220,7 @@ export const LoginModal = ({
             ) : null}
             <form className="flex flex-col gap-5" onSubmit={(e) => void onSubmitLogin(e)}>
               <div className="field">
-                <label htmlFor="login-email">E-mail</label>
+                <label htmlFor="login-email">Email</label>
                 <input
                   id="login-email"
                   name="email"
@@ -245,7 +245,7 @@ export const LoginModal = ({
               <div className="field">
                 <div className="mb-1 flex items-center justify-between gap-2">
                   <label htmlFor="login-password" className="m-0">
-                    Senha
+                    Password
                   </label>
                   <button
                     type="button"
@@ -256,7 +256,7 @@ export const LoginModal = ({
                     }}
                     className="text-xs font-medium text-indigo-400 hover:text-indigo-300"
                   >
-                    Esqueceu sua senha?
+                    Forgot password?
                   </button>
                 </div>
                 <input
@@ -274,14 +274,14 @@ export const LoginModal = ({
                   type="submit"
                   className="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:bg-indigo-700 active:scale-[0.98]"
                 >
-                  Entrar
+                  Sign in
                 </button>
                 <button
                   type="button"
                   onClick={onOpenRegister}
                   className="text-center text-sm font-medium text-indigo-400 hover:text-indigo-300"
                 >
-                  Criar conta
+                  Create account
                 </button>
               </div>
             </form>
@@ -292,10 +292,10 @@ export const LoginModal = ({
               id="forgot-title"
               className="mb-2 text-2xl font-bold tracking-tight text-slate-50"
             >
-              Redefinir senha
+              Reset password
             </h2>
             <p className="mb-6 text-sm text-slate-400">
-              Informe o e-mail cadastrado e a nova senha. Você poderá entrar em seguida.
+              Enter your registered email and new password. You can sign in right after.
             </p>
             {error ? (
               <p className="error-banner" role="alert">
@@ -304,7 +304,7 @@ export const LoginModal = ({
             ) : null}
             <form className="flex flex-col gap-5" onSubmit={(e) => void onSubmitForgot(e)}>
               <div className="field">
-                <label htmlFor="forgot-email">E-mail</label>
+                <label htmlFor="forgot-email">Email</label>
                 <input
                   id="forgot-email"
                   name="email"
@@ -322,7 +322,7 @@ export const LoginModal = ({
                 />
               </div>
               <div className="field">
-                <label htmlFor="forgot-new">Nova senha</label>
+                <label htmlFor="forgot-new">New password</label>
                 <input
                   id="forgot-new"
                   name="newPassword"
@@ -334,7 +334,7 @@ export const LoginModal = ({
                 />
               </div>
               <div className="field">
-                <label htmlFor="forgot-confirm">Confirmar nova senha</label>
+                <label htmlFor="forgot-confirm">Confirm new password</label>
                 <input
                   id="forgot-confirm"
                   name="confirmPassword"
@@ -355,7 +355,7 @@ export const LoginModal = ({
                   type="submit"
                   className="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:bg-indigo-500 active:scale-[0.98]"
                 >
-                  Atualizar senha
+                  Update password
                 </button>
                 <button
                   type="button"
@@ -366,7 +366,7 @@ export const LoginModal = ({
                   }}
                   className="text-center text-sm font-medium text-slate-400 hover:text-slate-200"
                 >
-                  Voltar ao login
+                  Back to sign in
                 </button>
               </div>
             </form>

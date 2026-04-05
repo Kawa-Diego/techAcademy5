@@ -85,11 +85,11 @@ export const ProductNewPage = (): React.ReactElement => {
       Number.isNaN(stock) ||
       stock < 0
     ) {
-      setError('Preencha todos os campos corretamente');
+      setError('Fill in all fields correctly');
       return;
     }
     if (imageUrls.length === 0) {
-      setError('Envie ao menos uma imagem');
+      setError('Upload at least one image');
       return;
     }
     try {
@@ -112,28 +112,28 @@ export const ProductNewPage = (): React.ReactElement => {
       navigate('/products');
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Erro ao criar');
+      else setError('Failed to create');
     }
   };
 
   return (
     <div className="page">
-      <h1>Novo produto</h1>
+      <h1>New product</h1>
       <ErrorBanner message={error} />
       <div className="admin-form-panel">
         <form onSubmit={(e) => void onSubmit(e)} className="stack narrow">
-          <TextField label="Nome" value={name} onChange={(e) => setName(e.target.value)} required />
-          <TextField label="Descrição" value={description} onChange={(e) => setDescription(e.target.value)} required />
-          <TextField label="Preço (R$)" value={price} onChange={(e) => setPrice(e.target.value)} required />
+          <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} required />
+          <TextField label="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
+          <TextField label="Price (BRL)" value={price} onChange={(e) => setPrice(e.target.value)} required />
           <TextField
-            label="Estoque (unidades)"
+            label="Stock (units)"
             value={stockQuantity}
             onChange={(e) => setStockQuantity(e.target.value)}
             required
           />
-          <TextField label="URL modelo 3D" value={model3dUrl} onChange={(e) => setModel3dUrl(e.target.value)} required />
+          <TextField label="3D model URL" value={model3dUrl} onChange={(e) => setModel3dUrl(e.target.value)} required />
           <SelectField
-            label="Categoria"
+            label="Category"
             name="categoryId"
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
@@ -141,7 +141,7 @@ export const ProductNewPage = (): React.ReactElement => {
             required
           />
           <div className="field">
-            <label htmlFor="product-images">Imagens do produto</label>
+            <label htmlFor="product-images">Product images</label>
             <input
               id="product-images"
               name="images"
@@ -153,9 +153,9 @@ export const ProductNewPage = (): React.ReactElement => {
               className="text-sm text-slate-100 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-indigo-500"
             />
             <p className="mt-1 text-xs text-slate-400">
-              Uma ou mais imagens (máx. 12 por envio). Formatos de imagem comuns.
+              One or more images (max. 12 per upload). Common image formats.
             </p>
-            {uploading ? <p className="text-sm text-slate-400">Enviando…</p> : null}
+            {uploading ? <p className="text-sm text-slate-400">Uploading…</p> : null}
             {imageUrls.length > 0 ? (
               <ul className="mt-3 flex flex-wrap gap-2">
                 {imageUrls.map((url, i) => (
@@ -169,7 +169,7 @@ export const ProductNewPage = (): React.ReactElement => {
                       type="button"
                       className="absolute -right-1 -top-1 rounded-full bg-red-600 px-1.5 text-xs text-white"
                       onClick={() => removeImage(i)}
-                      aria-label="Remover"
+                      aria-label="Remove"
                     >
                       ×
                     </button>
@@ -179,7 +179,7 @@ export const ProductNewPage = (): React.ReactElement => {
             ) : null}
           </div>
           <FormActions>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit">Save</Button>
           </FormActions>
         </form>
       </div>

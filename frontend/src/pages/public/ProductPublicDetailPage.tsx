@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { ApiRequestError, httpJson } from '../../services/http';
 
 const formatPrice = (cents: number): string =>
-  (cents / 100).toLocaleString('pt-BR', {
+  (cents / 100).toLocaleString('en-US', {
     style: 'currency',
     currency: 'BRL',
   });
@@ -33,7 +33,7 @@ export const ProductPublicDetailPage = (): ReactElement => {
         setError(null);
       } catch (e) {
         if (e instanceof ApiRequestError) setError(e.message);
-        else setError('Produto não encontrado');
+        else setError('Product not found');
         setProduct(null);
       }
     })();
@@ -60,7 +60,7 @@ export const ProductPublicDetailPage = (): ReactElement => {
       navigate('/orders');
     } catch (e) {
       if (e instanceof ApiRequestError) setOrderError(e.message);
-      else setOrderError('Não foi possível concluir o pedido');
+      else setOrderError('Could not complete the order');
     } finally {
       setBusy(false);
     }
@@ -71,7 +71,7 @@ export const ProductPublicDetailPage = (): ReactElement => {
       <main className="mx-auto max-w-3xl px-6 pb-24 pt-28">
         <p className="error-banner">{error}</p>
         <Link to="/vitrine" className="mt-4 inline-block text-indigo-600">
-          ← Voltar à vitrine
+          ← Back to shop
         </Link>
       </main>
     );
@@ -79,7 +79,7 @@ export const ProductPublicDetailPage = (): ReactElement => {
 
   if (product === null) {
     return (
-      <main className="px-6 pt-28 text-center text-slate-500">Carregando…</main>
+      <main className="px-6 pt-28 text-center text-slate-500">Loading…</main>
     );
   }
 
@@ -93,13 +93,13 @@ export const ProductPublicDetailPage = (): ReactElement => {
         to="/vitrine"
         className="mb-6 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-800"
       >
-        ← Voltar à vitrine
+        ← Back to shop
       </Link>
       <div className="grid gap-10 lg:grid-cols-2">
         <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
           {product.outOfStock ? (
             <div className="absolute right-3 top-3 z-10 rounded-full bg-red-600 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-md">
-              Fora de estoque
+              Out of stock
             </div>
           ) : null}
           <div className="aspect-square">
@@ -127,26 +127,27 @@ export const ProductPublicDetailPage = (): ReactElement => {
 
           {product.outOfStock ? (
             <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
-              Este produto está indisponível para compra no momento.
+              This product is unavailable for purchase at the moment.
             </p>
           ) : user?.role === 'ADMIN' ? (
             <p className="text-sm text-slate-500">
-              Para registrar pedidos como administrador, use{' '}
-              <Link to="/orders/new" className="font-medium text-indigo-600 underline">
-                Pedidos → Novo pedido
+              Store orders are placed by customers in the shop. Track and manage
+              them under{' '}
+              <Link to="/orders" className="font-medium text-indigo-600 underline">
+                Orders
               </Link>
               .
             </p>
           ) : token === null ? (
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <p className="mb-3 text-sm text-slate-700">
-                Entre com sua conta de cliente para efetuar o pedido.
+                Sign in with your customer account to place an order.
               </p>
               <Link
                 to={`/?login=1&next=${loginNext}`}
                 className="inline-flex rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500"
               >
-                Entrar e comprar
+                Sign in to buy
               </Link>
             </div>
           ) : showBuy ? (
@@ -161,15 +162,15 @@ export const ProductPublicDetailPage = (): ReactElement => {
                 disabled={busy}
                 className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-lg font-semibold text-white shadow-md transition hover:bg-indigo-500 disabled:opacity-60 sm:w-auto"
               >
-                {busy ? 'Processando…' : 'Comprar agora (1 unidade)'}
+                {busy ? 'Processing…' : 'Buy now (1 unit)'}
               </button>
               <p className="text-xs text-slate-500">
-                O pedido será criado como pendente. Você pode acompanhar em Pedidos.
+                The order will be created as pending. You can track it under Orders.
               </p>
             </form>
           ) : (
             <p className="text-sm text-slate-500">
-              Apenas contas de cliente podem comprar pela vitrine.
+              Only customer accounts can purchase from the shop.
             </p>
           )}
         </div>

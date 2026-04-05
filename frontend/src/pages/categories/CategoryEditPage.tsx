@@ -30,7 +30,7 @@ export const CategoryEditPage = (): React.ReactElement => {
         setDescription(row.description);
       } catch (e) {
         if (e instanceof ApiRequestError) setError(e.message);
-        else setError('Erro ao carregar');
+        else setError('Failed to load');
       }
     };
     void run();
@@ -41,7 +41,7 @@ export const CategoryEditPage = (): React.ReactElement => {
     if (token === null || id === undefined) return;
     setError(null);
     if (name.trim().length === 0 || description.trim().length === 0) {
-      setError('Preencha todos os campos obrigatórios');
+      setError('Fill in all required fields');
       return;
     }
     try {
@@ -56,25 +56,25 @@ export const CategoryEditPage = (): React.ReactElement => {
       navigate('/categories');
     } catch (e) {
       if (e instanceof ApiRequestError) setError(e.message);
-      else setError('Erro ao salvar');
+      else setError('Failed to save');
     }
   };
 
   return (
     <div className="page">
-      <h1>Editar categoria</h1>
+      <h1>Edit category</h1>
       <ErrorBanner message={error} />
       <div className="admin-form-panel">
         <form onSubmit={(e) => void onSubmit(e)} className="stack narrow">
-          <TextField label="Nome" value={name} onChange={(e) => setName(e.target.value)} required />
+          <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} required />
           <TextField
-            label="Descrição"
+            label="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
           />
           <FormActions>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit">Save</Button>
           </FormActions>
         </form>
       </div>

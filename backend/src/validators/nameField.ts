@@ -5,4 +5,4 @@ import { formatDisplayName } from '@ecommerce/shared';
 export const zodNonEmptyDisplayName = z
   .string()
   .transform((s) => formatDisplayName(s))
-  .refine((s) => s.length > 0, { message: 'Nome inválido' });
+  .refine((s) => s.length > 0, { message: 'Invalid name' });

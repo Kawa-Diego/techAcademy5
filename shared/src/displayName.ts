@@ -1,7 +1,4 @@
-/**
- * Nome para exibição: primeira letra de cada palavra em maiúscula (ex.: "John Deep").
- * Usa regras de capitalização do locale pt-BR.
- */
+// Transform the display name to the first letter of each word in uppercase
 export function formatDisplayName(raw: string): string {
   const s = raw.trim();
   if (s.length === 0) return '';
@@ -15,7 +12,7 @@ export function formatDisplayName(raw: string): string {
     .join(' ');
 }
 
-/** True se, após normalização, o nome tem pelo menos um caractere (rejeita só espaços). */
+// Check if the display name is not empty
 export function isNonEmptyDisplayName(raw: string): boolean {
   return formatDisplayName(raw).length > 0;
 }

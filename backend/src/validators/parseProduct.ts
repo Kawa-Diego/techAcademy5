@@ -8,13 +8,13 @@ const schema = z.object({
   priceCents: z.number().int().nonnegative(),
   model3dUrl: z.string().min(1),
   categoryId: z.string().min(1),
-  imageUrls: z.array(z.string().min(1)).min(1, 'Informe ao menos uma imagem'),
+  imageUrls: z.array(z.string().min(1)).min(1, 'Provide at least one image'),
   stockQuantity: z.number().int().min(0),
 });
 
 const fail = (error: z.ZodError): never => {
   const first = error.issues[0];
-  throw new AppError(400, first?.message ?? 'Payload inválido');
+  throw new AppError(400, first?.message ?? 'Invalid payload');
 };
 
 export const parseProductBody = (body: object): CreateProductPayload => {
