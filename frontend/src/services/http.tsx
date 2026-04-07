@@ -130,5 +130,10 @@ export const httpFormData = async <T,>(
 // Media url for http media url
 export const mediaUrl = (path: string): string => {
   if (path.startsWith('http')) return path;
-  return path.startsWith('/') ? path : `/${path}`;
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  const base = fromEnv();
+  if (base.length > 0) {
+    return `${trimApi(base)}${normalized}`;
+  }
+  return normalized;
 };

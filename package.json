@@ -1,0 +1,19 @@
+{
+  "name": "ecommerce-web",
+  "private": true,
+  "description": "Monorepo: shared types, React frontend (Vercel), Node backend (hospedagem separada)",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "shared",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build -w @ecommerce/shared && npm run build -w @ecommerce/frontend",
+    "build:shared": "npm run build -w @ecommerce/shared",
+    "build:frontend": "npm run build -w @ecommerce/frontend",
+    "dev:frontend": "npm run dev -w @ecommerce/frontend",
+    "dev:backend": "npm run dev --prefix backend"
+  }
+}

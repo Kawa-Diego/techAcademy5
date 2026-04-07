@@ -1,0 +1,4 @@
+# Não enviar ao build da Vercel (só o front + shared entram via npm workspaces)
+backend
+**/.git
+**/node_modules/.cache

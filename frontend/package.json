@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ecommerce/shared": "file:../shared",
+    "@ecommerce/shared": "*",
     "clsx": "^2.1.1",
     "gsap": "^3.14.2",
     "lucide-react": "^1.7.0",

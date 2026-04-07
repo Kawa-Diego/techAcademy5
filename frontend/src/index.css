@@ -9,7 +9,7 @@
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
-    font-family: 'Nata Sans', ui-sans-serif, system-ui, sans-serif;
+    font-family: 'Nata Sans', ui-sans-serif, system-ui;
   }
   #root {
     min-height: 100%;
@@ -17,7 +17,7 @@
 }
 
 @layer components {
-  /* Área logada: fundo escuro fosco + texto claro em títulos de página */
+  /* Backgroung dark and text light for page titles */
   .app-shell {
     @apply bg-zinc-950 text-slate-200;
     background-image:
@@ -115,10 +115,9 @@
   .order-item-row {
     @apply grid gap-3 rounded-xl border-2 border-amber-500/35 bg-zinc-950/50 p-4 sm:grid-cols-[2fr_1fr_auto] sm:items-end;
   }
-
-  /* Página inicial: tipografia Changa One (bloco completo) */
+  /* Login and registration modal: dark semi-transparent card with readable inputs */
   .font-changa-landing {
-    font-family: 'Changa One', ui-sans-serif, sans-serif;
+    font-family: 'Changa One', ui-sans-serif, system-ui;
   }
 
   /* Modais de login e cadastro: cartão escuro semitransparente + inputs legíveis */
