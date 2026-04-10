@@ -172,6 +172,12 @@ function createClient(): InMemoryPrismaClient {
       skip?: number;
       take?: number;
       orderBy?: { createdAt?: 'desc' | 'asc' };
+      where?: {
+        OR?: ReadonlyArray<{
+          name?: { contains: string; mode?: string };
+          email?: { contains: string; mode?: string };
+        }>;
+      };
     }) => {
       let rows =
         args.orderBy?.createdAt === 'asc'
@@ -179,11 +185,55 @@ function createClient(): InMemoryPrismaClient {
               (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
             )
           : sortDescCreated(store.users);
+      if (args.where?.OR !== undefined) {
+        rows = rows.filter((u) =>
+          args.where!.OR!.some((clause) => {
+            const n = clause.name?.contains?.toLowerCase() ?? '';
+            const e = clause.email?.contains?.toLowerCase() ?? '';
+            if (n.length > 0 && u.name.toLowerCase().includes(n)) return true;
+            if (e.length > 0 && u.email.toLowerCase().includes(e)) return true;
+            return false;
+          })
+        );
+      }
       const skip = args.skip ?? 0;
       const take = args.take ?? rows.length;
       return rows.slice(skip, skip + take).map((r) => ({ ...r }));
     },
-    count: async () => store.users.length,
+    count: async (args?: {
+      where?: {
+        OR?: ReadonlyArray<{
+          name?: { contains: string; mode?: string };
+          email?: { contains: string; mode?: string };
+        }>;
+      };
+    }) => {
+      if (args?.where?.OR !== undefined) {
+        return store.users.filter((u) =>
+          args.where!.OR!.some((clause) => {
+            const n = clause.name?.contains?.toLowerCase() ?? '';
+            const e = clause.email?.contains?.toLowerCase() ?? '';
+            if (n.length > 0 && u.name.toLowerCase().includes(n)) return true;
+            if (e.length > 0 && u.email.toLowerCase().includes(e)) return true;
+            return false;
+          })
+        ).length;
+      }
+      return store.users.length;
+    },
+    delete: async ({ where }: { where: { id: string } }) => {
+      const idx = store.users.findIndex((r) => r.id === where.id);
+      if (idx === -1) throw new Error('User not found');
+      const [removed] = store.users.splice(idx, 1);
+      if (removed === undefined) throw new Error('User not found');
+      for (const o of store.orders) {
+        if (o.userId === where.id) o.userId = null;
+      }
+      for (const a of store.auditLogs) {
+        if (a.userId === where.id) a.userId = null;
+      }
+      return { ...removed };
+    },
     deleteMany: async () => {
       const n = store.users.length;
       store.users = [];

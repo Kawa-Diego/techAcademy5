@@ -100,7 +100,7 @@ export const UserEditPage = (): ReactElement => {
   }
 
   return (
-    <div className="page">
+    <div className="page stack narrow max-w-xl mx-auto">
       <div className="page-header">
         <h1>Edit user</h1>
         <Link to="/users" className="btn btn-secondary">

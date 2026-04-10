@@ -7,7 +7,14 @@ import type {
 } from '@ecommerce/shared';
 import { AppError } from '../errors/AppError';
 
-const statusEnum = z.enum(['PENDING', 'PAID', 'SHIPPED', 'CANCELLED']);
+const statusEnum = z.enum([
+  'PENDING',
+  'PAID',
+  'SHIPPED',
+  'CANCELLED',
+  'REFUNDED',
+  'CLOSED',
+]);
 
 const itemSchema = z.object({
   productId: z.string().min(1),

@@ -21,6 +21,8 @@ import { ProductNewPage } from "./pages/products/ProductNewPage";
 import { ProductEditPage } from "./pages/products/ProductEditPage";
 import { OrderListPage } from "./pages/orders/OrderListPage";
 import { OrderEditPage } from "./pages/orders/OrderEditPage";
+import { CartPage } from "./pages/cart/CartPage";
+import { UserCartsAdminPage } from "./pages/users/UserCartsAdminPage";
 
 // App component for the ecommerce web application with routes and context providers
 export const App = (): React.ReactElement => (
@@ -45,10 +47,12 @@ export const App = (): React.ReactElement => (
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/profile/edit" element={<ProfileEditPage />} />
+            <Route path="/cart" element={<CartPage />} />
             <Route path="/orders" element={<OrderListPage />} />
             <Route element={<AdminOnlyOutlet />}>
               <Route path="/dashboard" element={<DashboardHome />} />
               <Route path="/users" element={<UserListPage />} />
+              <Route path="/user-carts" element={<UserCartsAdminPage />} />
               <Route path="/users/:id/edit" element={<UserEditPage />} />
               <Route path="/categories" element={<CategoryListPage />} />
               <Route path="/categories/new" element={<CategoryNewPage />} />

@@ -41,7 +41,7 @@ describe('API — extended scenarios (fixtures + negative paths)', () => {
         password: 'WrongPass9!',
       });
       expect(res.status).toBe(401);
-      expect(String(res.body.message ?? '')).toMatch(/credential/i);
+      expect(String(res.body.message ?? '')).toMatch(/Invalid Password/i);
     });
 
     it('rejects login for unknown email (401)', async () => {
@@ -272,6 +272,134 @@ describe('API — extended scenarios (fixtures + negative paths)', () => {
           stockQuantity: 1,
         });
       expect(res.status).toBe(400);
+    });
+  });
+
+  describe('order state machine & refund invariants', () => {
+    it('admin cannot PUT order after refund confirmed (terminal status)', async () => {
+      const world = await seedTestWorld();
+      const created = await request(world.app)
+        .post('/orders')
+        .set('Authorization', `Bearer ${world.aliceToken}`)
+        .send({
+          notes: 'state test',
+          items: [{ productId: world.productId, quantity: 1 }],
+        });
+      expect(created.status).toBe(201);
+      const orderId = created.body.id as string;
+      const itemId = created.body.items[0].id as string;
+
+      await request(world.app)
+        .post(`/orders/${orderId}/items/${itemId}/refund-request`)
+        .set('Authorization', `Bearer ${world.aliceToken}`)
+        .send({ confirm: true });
+      await request(world.app)
+        .post(`/orders/${orderId}/items/${itemId}/refund-confirm`)
+        .set('Authorization', `Bearer ${world.adminToken}`);
+
+      const put = await request(world.app)
+        .put(`/orders/${orderId}`)
+        .set('Authorization', `Bearer ${world.adminToken}`)
+        .send({
+          status: 'PAID',
+          notes: 'try edit',
+          items: [{ productId: world.productId, quantity: 1 }],
+        });
+      expect(put.status).toBe(400);
+      expect(String(put.body.message ?? '')).toMatch(/status|edit|current/i);
+    });
+
+    it('refund confirm is idempotent (second POST 200, stock unchanged)', async () => {
+      const world = await seedTestWorld();
+      const created = await request(world.app)
+        .post('/orders')
+        .set('Authorization', `Bearer ${world.aliceToken}`)
+        .send({
+          notes: 'idempotent',
+          items: [{ productId: world.productId, quantity: 1 }],
+        });
+      expect(created.status).toBe(201);
+      const orderId = created.body.id as string;
+      const itemId = created.body.items[0].id as string;
+
+      await request(world.app)
+        .post(`/orders/${orderId}/items/${itemId}/refund-request`)
+        .set('Authorization', `Bearer ${world.aliceToken}`)
+        .send({ confirm: true });
+      const first = await request(world.app)
+        .post(`/orders/${orderId}/items/${itemId}/refund-confirm`)
+        .set('Authorization', `Bearer ${world.adminToken}`);
+      expect(first.status).toBe(200);
+
+      const stockMid = (
+        await request(world.app)
+          .get(`/products/${world.productId}`)
+          .set('Authorization', `Bearer ${world.adminToken}`)
+      ).body.stockQuantity as number;
+
+      const second = await request(world.app)
+        .post(`/orders/${orderId}/items/${itemId}/refund-confirm`)
+        .set('Authorization', `Bearer ${world.adminToken}`);
+      expect(second.status).toBe(200);
+
+      const stockAfter = (
+        await request(world.app)
+          .get(`/products/${world.productId}`)
+          .set('Authorization', `Bearer ${world.adminToken}`)
+      ).body.stockQuantity as number;
+
+      expect(stockAfter).toBe(stockMid);
+    });
+  });
+
+  describe('users — search & account lifecycle', () => {
+    it('admin can filter users with ?q= substring', async () => {
+      const world = await seedTestWorld();
+      const res = await request(world.app)
+        .get('/users?page=1&pageSize=10&q=alice')
+        .set('Authorization', `Bearer ${world.adminToken}`);
+      expect(res.status).toBe(200);
+      const rows = res.body.data as Array<{ email: string }>;
+      expect(rows.some((u) => u.email.includes('alice'))).toBe(true);
+    });
+
+    it('after user deletes account, same email re-register sees no orders', async () => {
+      resetInMemoryPrisma();
+      const world = await seedTestWorld();
+      const created = await request(world.app)
+        .post('/orders')
+        .set('Authorization', `Bearer ${world.aliceToken}`)
+        .send({
+          notes: 'orphan',
+          items: [{ productId: world.productId, quantity: 1 }],
+        });
+      expect(created.status).toBe(201);
+
+      const del = await request(world.app)
+        .delete('/users/me')
+        .set('Authorization', `Bearer ${world.aliceToken}`);
+      expect(del.status).toBe(204);
+
+      const reg = await request(world.app).post('/auth/register').send({
+        name: 'Alice Again',
+        email: MOCK_EMAILS.alice,
+        password: MOCK_STRONG_PASSWORD,
+        cpf: MOCK_CPFS.alice,
+      });
+      expect(reg.status).toBe(201);
+
+      const login = await request(world.app).post('/auth/login').send({
+        email: MOCK_EMAILS.alice,
+        password: MOCK_STRONG_PASSWORD,
+      });
+      expect(login.status).toBe(200);
+      const newToken = login.body.token as string;
+
+      const list = await request(world.app)
+        .get('/orders?page=1&pageSize=10')
+        .set('Authorization', `Bearer ${newToken}`);
+      expect(list.status).toBe(200);
+      expect((list.body.data as unknown[]).length).toBe(0);
     });
   });
 });

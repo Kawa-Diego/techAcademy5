@@ -146,6 +146,7 @@ export const ProductEditPage = (): React.ReactElement => {
     <div className="page">
       <h1>Edit product</h1>
       <ErrorBanner message={error} />
+      <div className="admin-form-panel">
       <form onSubmit={(e) => void onSubmit(e)} className="stack narrow">
         <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} required />
         <TextField label="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
@@ -204,9 +205,11 @@ export const ProductEditPage = (): React.ReactElement => {
           ) : null}
         </div>
         <FormActions>
-          <Button type="submit">Save</Button>
+          <Button type="submit" className="w-full">Save</Button>
         </FormActions>
+        <button type="button" className="btn btn-secondary mt-4 w-full" onClick={() => navigate('/products')}>Back</button>
       </form>
+    </div>
     </div>
   );
 };

@@ -53,8 +53,9 @@ export const CategoryNewPage = (): React.ReactElement => {
             required
           />
           <FormActions>
-            <Button type="submit">Save</Button>
+            <Button type="submit" className="w-full">Save</Button>
           </FormActions>
+        <button type="button" className="btn btn-secondary mt-4 w-full" onClick={() => navigate('/categories')}>Back</button>
         </form>
       </div>
     </div>

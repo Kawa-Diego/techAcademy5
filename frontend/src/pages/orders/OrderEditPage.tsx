@@ -15,7 +15,15 @@ const STATUSES: readonly OrderStatus[] = [
   'PAID',
   'SHIPPED',
   'CANCELLED',
+  'REFUNDED',
+  'CLOSED',
 ] as const;
+
+const TERMINAL_STATUSES: ReadonlySet<OrderStatus> = new Set([
+  'CANCELLED',
+  'REFUNDED',
+  'CLOSED',
+]);
 
 export const OrderEditPage = (): React.ReactElement => {
   const { id } = useParams();
@@ -26,6 +34,7 @@ export const OrderEditPage = (): React.ReactElement => {
   const [notes, setNotes] = useState('');
   const [items, setItems] = useState<OrderItemDraft[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loadedStatus, setLoadedStatus] = useState<OrderStatus | null>(null);
 
   useEffect(() => {
     const run = async (): Promise<void> => {
@@ -54,6 +63,7 @@ export const OrderEditPage = (): React.ReactElement => {
           { method: 'GET' },
           token
         );
+        setLoadedStatus(row.status);
         setStatus(row.status);
         setNotes(row.notes);
         setItems(row.items.map((i) => ({ productId: i.productId, quantity: i.quantity })));
@@ -65,9 +75,12 @@ export const OrderEditPage = (): React.ReactElement => {
     void run();
   }, [token, id]);
 
+  const readOnly =
+  loadedStatus !== null && TERMINAL_STATUSES.has(loadedStatus);
+
   const onSubmit = async (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
-    if (token === null || id === undefined) return;
+    if (token === null || id === undefined || readOnly) return;
     setError(null);
     const clean = items.filter((i) => i.productId.length > 0 && i.quantity > 0);
     if (clean.length === 0) {
@@ -99,7 +112,6 @@ export const OrderEditPage = (): React.ReactElement => {
 
   return (
     <div className="page">
-      <h1>Edit order</h1>
       <ErrorBanner message={error} />
       <form onSubmit={(e) => void onSubmit(e)} className="stack narrow">
         <SelectField
@@ -109,12 +121,14 @@ export const OrderEditPage = (): React.ReactElement => {
           onChange={(e) => setStatus(e.target.value as OrderStatus)}
           options={STATUSES.map((s) => ({ value: s, label: s }))}
           required
+          disabled={readOnly}
         />
-        <TextAreaField label="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
-        <OrderItemsEditor items={items} products={products} onChange={setItems} />
+        <TextAreaField label="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} disabled={readOnly} />
+        <OrderItemsEditor items={items} products={products} onChange={readOnly ? () => {} : setItems} />
         <FormActions>
-          <Button type="submit">Save</Button>
+          <Button type="submit" className="w-full" disabled={readOnly}>Save</Button>
         </FormActions>
+        <button type="button" className="btn btn-secondary mt-4 w-full" onClick={() => navigate('/orders')}>Back</button>
       </form>
     </div>
   );

@@ -1,6 +1,7 @@
 import path from 'node:path';
 import cors from 'cors';
 import express from 'express';
+import { getUploadsRoot } from './config/paths';
 import { errorMiddleware } from './middlewares/errorMiddleware';
 import { authRoutes } from './routes/authRoutes';
 import { categoryRoutes } from './routes/categoryRoutes';
@@ -10,15 +11,13 @@ import { publicRoutes } from './routes/publicRoutes';
 import { siteRoutes } from './routes/siteRoutes';
 import { uploadRoutes } from './routes/uploadRoutes';
 import { userRoutes } from './routes/userRoutes';
+import { cartRoutes } from './routes/cartRoutes';
 
 export const createApp = () => {
   const app = express();
   app.use(cors());
   app.use(express.json());
-  app.use(
-    '/uploads',
-    express.static(path.join(process.cwd(), 'uploads'))
-  );
+  app.use('/uploads', express.static(getUploadsRoot()));
   app.use('/public', publicRoutes());
   app.use('/upload', uploadRoutes());
   app.use('/site', siteRoutes());
@@ -27,6 +26,7 @@ export const createApp = () => {
   app.use('/categories', categoryRoutes());
   app.use('/products', productRoutes());
   app.use('/orders', orderRoutes());
+  app.use('/cart', cartRoutes());
   app.use(errorMiddleware);
   return app;
 };

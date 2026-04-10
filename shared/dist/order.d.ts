@@ -1,4 +1,4 @@
-export type OrderStatus = 'PENDING' | 'PAID' | 'SHIPPED' | 'CANCELLED';
+export type OrderStatus = 'PENDING' | 'PAID' | 'SHIPPED' | 'CANCELLED' | 'REFUNDED' | 'CLOSED';
 export type OrderItem = {
     readonly id: string;
     readonly productId: string;

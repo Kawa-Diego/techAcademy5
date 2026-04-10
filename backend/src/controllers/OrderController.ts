@@ -106,7 +106,10 @@ export class OrderController {
   });
 
   public readonly delete = asyncRoute(async (req, res) => {
-    await this.orders.delete(req.params['id'] ?? '');
+    await this.orders.delete(
+      req.params['id'] ?? '',
+      req.authUserId ?? null
+    );
     this.noContent(res);
   });
 

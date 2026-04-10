@@ -1,19 +1,30 @@
 {
   "name": "ecommerce-web",
   "private": true,
-  "description": "Monorepo: shared types, React frontend (Vercel), Node backend (hospedagem separada)",
+  "description": "Monorepo: shared, React frontend + Express API na Vercel (serverless)",
   "engines": {
     "node": ">=20"
   },
   "workspaces": [
     "shared",
-    "frontend"
+    "frontend",
+    "backend"
   ],
+  "dependencies": {
+    "express": "^4.21.1",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
+    "typescript": "^5.6.3"
+  },
   "scripts": {
-    "build": "npm run build -w @ecommerce/shared && npm run build -w @ecommerce/frontend",
+    "build": "npm run build -w @ecommerce/shared && npm run vercel:build-backend && npm run build -w @ecommerce/frontend",
+    "vercel:build-backend": "cd backend && npx prisma generate && npm run build",
     "build:shared": "npm run build -w @ecommerce/shared",
     "build:frontend": "npm run build -w @ecommerce/frontend",
     "dev:frontend": "npm run dev -w @ecommerce/frontend",
-    "dev:backend": "npm run dev --prefix backend"
+    "dev:backend": "npm run dev -w @ecommerce/backend"
   }
 }

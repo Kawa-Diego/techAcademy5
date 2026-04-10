@@ -1,10 +1,10 @@
-import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import multer from 'multer';
+import { ensureUploadsDirs, getUploadsRoot } from '../config/paths';
 
-const dir = path.join(process.cwd(), 'uploads', 'products');
-fs.mkdirSync(dir, { recursive: true });
+ensureUploadsDirs();
+const dir = path.join(getUploadsRoot(), 'products');
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {

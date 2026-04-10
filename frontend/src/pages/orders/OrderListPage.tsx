@@ -182,7 +182,7 @@ export const OrderListPage = (): ReactElement => {
                 );
               })}
             </ul>
-            {isAdmin ? (
+            {!isAdmin ? (
               <div className="mt-4 border-t border-white/10 pt-3">
                 <Link
                   to={`/orders/${o.id}/edit`}

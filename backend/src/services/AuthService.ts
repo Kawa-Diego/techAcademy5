@@ -65,12 +65,13 @@ export class AuthService {
   public async login(body: LoginPayload): Promise<LoginResponse> {
     assertValidEmail(body.email);
     const user = await this.users.findByEmail(body.email.trim());
-    if (!user) throw new AppError(401, 'Invalid credentials');
+    if (!user) throw new AppError(401, 'Not Registered');
     const ok = await comparePassword(body.password, user.passwordHash);
-    if (!ok) throw new AppError(401, 'Invalid credentials');
+    if (!ok) throw new AppError(401, 'Invalid Password');
     const token = signUserToken(user.id, user.role as UserRole);
     return { token, user: toUserPublic(user) };
   }
+  
 
   private validateRegistration(body: RegisterUserPayload): void {
     assertValidEmail(body.email);

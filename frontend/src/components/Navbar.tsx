@@ -1,8 +1,14 @@
-import { useEffect, useRef, type ReactElement } from 'react';
+import { useEffect, useRef, useState, type ReactElement } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
-import type { Category, SiteNavigationResponse, SiteNavItem } from '@ecommerce/shared';
+import type {
+  CartResponse,
+  Category,
+  SiteNavigationResponse,
+  SiteNavItem,
+} from '@ecommerce/shared';
 import { useAuth } from '../context/AuthContext';
+import { httpJson } from '../services/http';
 
 type Props = {
   readonly navigation: SiteNavigationResponse | null;
@@ -50,7 +56,8 @@ export const Navbar = ({
   onLoginClick,
   onRegisterClick,
 }: Props): ReactElement => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const [cartTotal, setCartTotal] = useState<number | null>(null);
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const navRef = useRef<HTMLElement>(null);
@@ -60,6 +67,16 @@ export const Navbar = ({
     onShopPaths && categoriaId.length > 0
       ? categories.find((c) => c.id === categoriaId)
       : undefined;
+
+  useEffect(() => {
+    if (user?.role !== 'USER' || token === null) {
+      setCartTotal(null);
+      return;
+    }
+    void httpJson<CartResponse>('/cart', { method: 'GET' }, token)
+      .then((c) => setCartTotal(c.itemQuantityTotal))
+      .catch(() => setCartTotal(null));
+  }, [user?.role, token, location.pathname]);
 
   useEffect(() => {
     const el = navRef.current;
@@ -82,7 +99,7 @@ export const Navbar = ({
   return (
     <nav
       ref={navRef}
-      className="fixed inset-x-0 top-0 z-50 w-full border-b border-white/10 bg-zinc-950/50 shadow-lg shadow-black/20 backdrop-blur-xl transition-colors"
+      className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-zinc-950/50 shadow-lg shadow-black/20 backdrop-blur-xl transition-colors"
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
@@ -113,6 +130,19 @@ export const Navbar = ({
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-4">
+          {user?.role === 'USER' && token !== null ? (
+            <Link
+              to="/cart"
+              className="relative rounded-xl border border-amber-500/35 bg-zinc-900/80 px-3 py-2 text-sm font-semibold text-amber-100 transition hover:border-amber-400/60 sm:px-4"
+            >
+              Cart
+              {cartTotal !== null && cartTotal > 0 ? (
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold text-zinc-950">
+                  {cartTotal > 99 ? '99+' : String(cartTotal)}
+                </span>
+              ) : null}
+            </Link>
+          ) : null}
           {user ? (
             <Link
               to={user.role === 'ADMIN' ? '/dashboard' : '/orders'}

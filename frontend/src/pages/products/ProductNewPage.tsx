@@ -122,13 +122,14 @@ export const ProductNewPage = (): React.ReactElement => {
       <ErrorBanner message={error} />
       <div className="admin-form-panel">
         <form onSubmit={(e) => void onSubmit(e)} className="stack narrow">
-          <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-          <TextField label="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
-          <TextField label="Price (BRL)" value={price} onChange={(e) => setPrice(e.target.value)} required />
+          <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="off" required />
+          <TextField label="Description" value={description} onChange={(e) => setDescription(e.target.value)} autoComplete="off" required />
+          <TextField label="Price (BRL)" value={price} onChange={(e) => setPrice(e.target.value)} autoComplete="off" required />
           <TextField
             label="Stock (units)"
             value={stockQuantity}
             onChange={(e) => setStockQuantity(e.target.value)}
+            autoComplete="off"
             required
           />
           <TextField label="3D model URL" value={model3dUrl} onChange={(e) => setModel3dUrl(e.target.value)} required />
@@ -179,8 +180,9 @@ export const ProductNewPage = (): React.ReactElement => {
             ) : null}
           </div>
           <FormActions>
-            <Button type="submit">Save</Button>
+            <Button type="submit" className="w-full">Save</Button>
           </FormActions>
+          <button type="button" className="btn btn-secondary mt-4 w-full" onClick={() => navigate('/products')}>Back</button>
         </form>
       </div>
     </div>

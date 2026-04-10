@@ -37,13 +37,33 @@ export class UserModel {
     total: number;
   }> {
     const skip = (params.page - 1) * params.pageSize;
+    const where =
+      params.search !== undefined && params.search.length > 0
+        ? {
+            OR: [
+              {
+                name: {
+                  contains: params.search,
+                  mode: 'insensitive' as const,
+                },
+              },
+              {
+                email: {
+                  contains: params.search,
+                  mode: 'insensitive' as const,
+                },
+              },
+            ],
+          }
+        : {};
     const [rows, total] = await prisma.$transaction([
       prisma.user.findMany({
+        where,
         skip,
         take: params.pageSize,
         orderBy: { createdAt: 'desc' },
       }),
-      prisma.user.count(),
+      prisma.user.count({ where }),
     ]);
     return { rows, total };
   }

@@ -76,6 +76,7 @@ const appMenuForRole = (role: UserRole): AppMenuResponse => {
   const adminItems: AppMenuResponse['items'] = [
     { label: 'Home', path: '/dashboard' },
     { label: 'Users', path: '/users' },
+    { label: 'Carts', path: '/user-carts' },
     { label: 'Categories', path: '/categories' },
     { label: 'Products', path: '/products' },
     { label: 'Orders', path: '/orders' },
@@ -90,6 +91,7 @@ const appMenuForRole = (role: UserRole): AppMenuResponse => {
   return {
     brandHome: '/orders',
     items: [
+      { label: 'Cart', path: '/cart' },
       { label: 'Orders', path: '/orders' },
       { label: 'My account', path: '/profile/edit' },
     ],

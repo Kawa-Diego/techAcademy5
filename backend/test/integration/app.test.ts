@@ -11,10 +11,10 @@ vi.mock('../../src/lib/prisma', async () => {
 const validCpf = '39053344705';
 const strongPass = 'SenhaForte1!';
 
-describe('API e-commerce (dados mockados em memória, sem PostgreSQL)', () => {
+describe('e-commerce API, mocked in-memory database (no real DB)', () => {
   const app = createApp();
 
-  it('GET /site/navigation retorna menu público', async () => {
+  it('GET /site/navigation returns public menu', async () => {
     const res = await request(app).get('/site/navigation');
     expect(res.status).toBe(200);
     expect(res.body.brand?.path).toBe('/');

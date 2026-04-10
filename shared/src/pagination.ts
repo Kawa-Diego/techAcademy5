@@ -13,7 +13,9 @@ export type PaginatedResult<T> = {
 };
 
 // Pagination query type for pagination
+// Search is optional and can be used to filter the data
 export type PaginationQuery = {
   readonly page: number;
   readonly pageSize: number;
+  readonly search?: string;
 };

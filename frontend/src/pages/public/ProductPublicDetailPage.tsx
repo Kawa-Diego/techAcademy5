@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type ReactElement } from 'react';
+import { useEffect, useState, type ReactElement } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { PublicProduct } from '@ecommerce/shared';
 import { ImageCarousel } from '../../components/ImageCarousel';
@@ -17,8 +17,9 @@ export const ProductPublicDetailPage = (): ReactElement => {
   const { token, user } = useAuth();
   const [product, setProduct] = useState<PublicProduct | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [orderError, setOrderError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [cartError, setCartError] = useState<string | null>(null);
+  const [cartBusy, setCartBusy] = useState(false);
+  const [qty, setQty] = useState(1);
 
   useEffect(() => {
     if (productId === undefined) return;
@@ -39,30 +40,32 @@ export const ProductPublicDetailPage = (): ReactElement => {
     })();
   }, [productId]);
 
-  const onSubmitOrder = async (ev: FormEvent<HTMLFormElement>): Promise<void> => {
-    ev.preventDefault();
+  useEffect(() => {
+    if (product === null || product.outOfStock) return;
+    setQty((q) => Math.min(Math.max(1, q), product.stockQuantity));
+  }, [product]);
+
+  const onAddToCart = async (): Promise<void> => {
     if (product === null || token === null || user?.role !== 'USER') return;
     if (product.outOfStock) return;
-    setOrderError(null);
-    setBusy(true);
+    const q = Math.min(Math.max(1, qty), product.stockQuantity);
+    setCartError(null);
+    setCartBusy(true);
     try {
       await httpJson(
-        '/orders',
+        '/cart/items',
         {
           method: 'POST',
-          body: JSON.stringify({
-            items: [{ productId: product.id, quantity: 1 }],
-            notes: '',
-          }),
+          body: JSON.stringify({ productId: product.id, quantity: q }),
         },
         token
       );
-      navigate('/orders');
+      navigate('/cart');
     } catch (e) {
-      if (e instanceof ApiRequestError) setOrderError(e.message);
-      else setOrderError('Could not complete the order');
+      if (e instanceof ApiRequestError) setCartError(e.message);
+      else setCartError('Could not add to cart');
     } finally {
-      setBusy(false);
+      setCartBusy(false);
     }
   };
 
@@ -86,6 +89,7 @@ export const ProductPublicDetailPage = (): ReactElement => {
   const loginNext = encodeURIComponent(`/vitrine/${product.id}`);
   const isCustomer = user?.role === 'USER';
   const showBuy = isCustomer && !product.outOfStock;
+  const maxQty = product.outOfStock ? 1 : Math.max(1, product.stockQuantity);
 
   return (
     <main className="mx-auto max-w-4xl px-6 pb-24 pt-28 lg:pt-36">
@@ -151,23 +155,44 @@ export const ProductPublicDetailPage = (): ReactElement => {
               </Link>
             </div>
           ) : showBuy ? (
-            <form onSubmit={(e) => void onSubmitOrder(e)} className="space-y-3">
-              {orderError !== null ? (
+            <div className="space-y-4">
+              {cartError !== null ? (
                 <p className="text-sm text-red-600" role="alert">
-                  {orderError}
+                  {cartError}
                 </p>
               ) : null}
-              <button
-                type="submit"
-                disabled={busy}
-                className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-lg font-semibold text-white shadow-md transition hover:bg-indigo-500 disabled:opacity-60 sm:w-auto"
-              >
-                {busy ? 'Processing…' : 'Buy now (1 unit)'}
-              </button>
+              <div className="flex flex-wrap items-end gap-4">
+                <label className="flex flex-col gap-1 text-sm text-slate-700">
+                  <span className="font-medium">Quantity</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={maxQty}
+                    value={qty}
+                    onChange={(e) =>
+                      setQty(
+                        Math.min(
+                          maxQty,
+                          Math.max(1, Number(e.target.value) || 1)
+                        )
+                      )
+                    }
+                    className="w-24 rounded-lg border border-slate-300 px-3 py-2 text-slate-900"
+                  />
+                </label>
+                <button
+                  type="button"
+                  disabled={cartBusy}
+                  onClick={() => void onAddToCart()}
+                  className="rounded-xl bg-indigo-600 px-6 py-3.5 text-lg font-semibold text-white shadow-md transition hover:bg-indigo-500 disabled:opacity-60"
+                >
+                  {cartBusy ? 'Adding…' : 'Add to cart'}
+                </button>
+              </div>
               <p className="text-xs text-slate-500">
-                The order will be created as pending. You can track it under Orders.
+                Review your cart and place the order when ready. Checkout adjusts stock in the database.
               </p>
-            </form>
+            </div>
           ) : (
             <p className="text-sm text-slate-500">
               Only customer accounts can purchase from the shop.

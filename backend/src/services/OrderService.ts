@@ -12,6 +12,11 @@ import type {
 } from '@ecommerce/shared';
 import { AppError } from '../errors/AppError';
 import { prisma } from '../lib/prisma';
+import {
+  allOrderLinesRefundConfirmed,
+  canMutateOrder,
+  hasRefundActivity,
+} from '../domain/orderStateMachine';
 import { toOrder } from '../mappers/orderMapper';
 import { OrderModel } from '../models/OrderModel';
 import { buildPaginated } from '../utils/paginated';
@@ -112,6 +117,92 @@ export class OrderService {
     });
   }
 
+  /** Creates order from DB cart lines, decrements stock, clears cart (single transaction). */
+  public async checkoutFromCart(
+    userId: string,
+    notes: string
+  ): Promise<Order> {
+    const bundle = await prisma.$transaction(async (tx) => {
+      const cart = await tx.cart.findUnique({
+        where: { userId },
+        include: { items: true },
+      });
+      if (cart === null || cart.items.length === 0) {
+        throw new AppError(400, 'Cart is empty');
+      }
+
+      const resolved: ResolvedItem[] = [];
+      for (const line of cart.items) {
+        const product = await tx.product.findUnique({
+          where: { id: line.productId },
+        });
+        if (product === null) throw new AppError(404, 'Product not found');
+        if (product.stockQuantity < line.quantity) {
+          throw new AppError(400, 'Product out of stock');
+        }
+        resolved.push({
+          productId: product.id,
+          quantity: line.quantity,
+          unitPriceCents: product.priceCents,
+        });
+      }
+
+      const order = await tx.order.create({
+        data: {
+          status: 'PENDING',
+          notes,
+          userId,
+        },
+      });
+
+      for (const r of resolved) {
+        await tx.orderItem.create({
+          data: {
+            orderId: order.id,
+            productId: r.productId,
+            quantity: r.quantity,
+            unitPriceCents: r.unitPriceCents,
+          },
+        });
+        await tx.product.update({
+          where: { id: r.productId },
+          data: { stockQuantity: { decrement: r.quantity } },
+        });
+      }
+
+      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+
+      const actor = await tx.user.findUnique({
+        where: { id: userId },
+        select: { email: true },
+      });
+      await tx.auditLog.create({
+        data: {
+          userId,
+          action: 'ORDER_FROM_CART',
+          details: {
+            orderId: order.id,
+            itemCount: resolved.length,
+            actorEmail: actor?.email ?? null,
+          },
+        },
+      });
+
+      return { order };
+    });
+
+    const itemsWithProduct = await this.orders.findItems(bundle.order.id);
+    const u = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, name: true, email: true },
+    });
+    return toOrder(bundle.order, itemsWithProduct, {
+      userId: bundle.order.userId,
+      userName: u?.name ?? null,
+      userEmail: u?.email ?? null,
+    });
+  }
+
   private async placeOrderWithStock(params: {
     readonly status: string;
     readonly notes: string;
@@ -163,6 +254,10 @@ export class OrderService {
         });
       }
 
+      const actor = await tx.user.findUnique({
+        where: { id: params.actingUserId },
+        select: { email: true },
+      });
       await tx.auditLog.create({
         data: {
           userId: params.actingUserId,
@@ -170,6 +265,7 @@ export class OrderService {
           details: {
             ...params.auditDetails,
             orderId: order.id,
+            actorEmail: actor?.email ?? null,
           },
         },
       });
@@ -313,8 +409,17 @@ export class OrderService {
     body: UpdateOrderPayload,
     actingUserId: string | null
   ): Promise<Order> {
-    await this.requireOrder(id);
+    const existing = await this.requireOrder(id);
+    if (!canMutateOrder(existing.status)) {
+      throw new AppError(400, 'Order cannot be edited in its current status');
+    }
     const oldItems = await this.orders.findItems(id);
+    if (hasRefundActivity(oldItems)) {
+      throw new AppError(
+        400,
+        'Cannot edit order with refund activity; use refund flows instead'
+      );
+    }
     const bundle = await prisma.$transaction(async (tx) => {
       for (const oi of oldItems) {
         await tx.product.update({
@@ -365,9 +470,17 @@ export class OrderService {
       return { order, items: newItems };
     });
 
+    const actor =
+      actingUserId !== null
+        ? await prisma.user.findUnique({
+            where: { id: actingUserId },
+            select: { email: true },
+          })
+        : null;
     await writeAuditLog(actingUserId, 'ORDER_UPDATED_ADMIN', {
       orderId: id,
       status: body.status,
+      actorEmail: actor?.email ?? null,
     });
 
     const fresh = await prisma.order.findUnique({
@@ -385,9 +498,32 @@ export class OrderService {
     });
   }
 
-  public async delete(id: string): Promise<void> {
+  public async delete(
+    id: string,
+    actingUserId: string | null
+  ): Promise<void> {
     const order = await this.requireOrder(id);
+    if (!canMutateOrder(order.status)) {
+      throw new AppError(400, 'Order cannot be deleted in its current status');
+    }
     const items = await this.orders.findItems(id);
+    if (hasRefundActivity(items)) {
+      throw new AppError(
+        400,
+        'Cannot delete order with refund activity; resolve refunds first'
+      );
+    }
+    const ownerRow = await prisma.order.findUnique({
+      where: { id },
+      include: { user: { select: { email: true } } },
+    });
+    const actor =
+      actingUserId !== null
+        ? await prisma.user.findUnique({
+            where: { id: actingUserId },
+            select: { email: true },
+          })
+        : null;
     await prisma.$transaction(async (tx) => {
       for (const oi of items) {
         await tx.product.update({
@@ -397,7 +533,11 @@ export class OrderService {
       }
       await tx.order.delete({ where: { id } });
     });
-    await writeAuditLog(order.userId, 'ORDER_DELETED', { orderId: id });
+    await writeAuditLog(actingUserId, 'ORDER_DELETED', {
+      orderId: id,
+      ownerEmail: ownerRow?.user?.email ?? null,
+      actorEmail: actor?.email ?? null,
+    });
   }
 
   public async requestRefund(
@@ -434,6 +574,7 @@ export class OrderService {
       orderId,
       orderItemId: itemId,
       productId: item.productId,
+      customerEmail: row.user?.email ?? null,
     });
 
     const items = await this.orders.findItems(orderId);
@@ -461,11 +602,25 @@ export class OrderService {
       where: { id: itemId, orderId },
     });
     if (item === null) throw new AppError(404, 'Item not found');
+
+    if (item.refundConfirmedAt !== null) {
+      const itemsDone = await this.orders.findItems(orderId);
+      const freshDone = await prisma.order.findUnique({
+        where: { id: orderId },
+        include: {
+          user: { select: { id: true, name: true, email: true } },
+        },
+      });
+      if (freshDone === null) throw new AppError(404, 'Order not found');
+      return toOrder(freshDone, itemsDone, {
+        userId: freshDone.userId,
+        userName: freshDone.user?.name ?? null,
+        userEmail: freshDone.user?.email ?? null,
+      });
+    }
+
     if (item.refundRequestedAt === null) {
       throw new AppError(400, 'No refund request for this item');
-    }
-    if (item.refundConfirmedAt !== null) {
-      throw new AppError(400, 'Refund already confirmed');
     }
 
     await prisma.$transaction(async (tx) => {
@@ -477,13 +632,26 @@ export class OrderService {
         where: { id: item.productId },
         data: { stockQuantity: { increment: item.quantity } },
       });
+      const lines = await tx.orderItem.findMany({ where: { orderId } });
+      if (allOrderLinesRefundConfirmed(lines)) {
+        await tx.order.update({
+          where: { id: orderId },
+          data: { status: 'REFUNDED' },
+        });
+      }
     });
 
+    const adminActor = await prisma.user.findUnique({
+      where: { id: adminUserId },
+      select: { email: true },
+    });
     await writeAuditLog(adminUserId, 'REFUND_CONFIRMED', {
       orderId,
       orderItemId: itemId,
       productId: item.productId,
       quantity: item.quantity,
+      customerEmail: row.user?.email ?? null,
+      adminEmail: adminActor?.email ?? null,
     });
 
     const items = await this.orders.findItems(orderId);

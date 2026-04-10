@@ -97,7 +97,6 @@ export const VitrineShopSection = ({
           <h1 className="mb-2 text-3xl font-bold tracking-tight text-slate-50 lg:text-4xl">
             Shop
           </h1>
-          <p className="text-slate-400">Filter by category and scroll to see all</p>
         </div>
       )}
 
@@ -105,7 +104,7 @@ export const VitrineShopSection = ({
         <div
           ref={stripRef}
           onWheel={onStripWheel}
-          className="scrollbar-thin mb-10 flex snap-x snap-mandatory gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-amber-600/50 [&::-webkit-scrollbar-track]:bg-zinc-800"
+          className="mb-10 flex snap-x snap-mandatory gap-2 overflow-x-auto pb-2 max-md:[-ms-overflow-style:none] max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden md:scrollbar-thin md:[scrollbar-width:thin] md:[&::-webkit-scrollbar]:h-1.5 md:[&::-webkit-scrollbar-thumb]:rounded-full md:[&::-webkit-scrollbar-thumb]:bg-amber-600/50 md:[&::-webkit-scrollbar-track]:bg-zinc-800"
         >
           <Link
             to={basePath}

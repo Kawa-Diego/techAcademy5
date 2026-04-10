@@ -1,13 +1,18 @@
 import type { Response } from 'express';
 import { AppError } from '../errors/AppError';
+import { AdminMessageService } from '../services/AdminMessageService';
+import { CartService } from '../services/CartService';
 import { UserService } from '../services/UserService';
 import { asyncRoute } from '../utils/asyncRoute';
 import { getJsonBody } from '../utils/httpBody';
 import { parsePagination } from '../utils/pagination';
 import { parseUpdateUserBody } from '../validators/parseAuth';
+import { parseAdminUserMessageBody } from '../validators/parseCart';
 
 export class UserController {
   private readonly users = new UserService();
+  private readonly carts = new CartService();
+  private readonly adminMessages = new AdminMessageService();
 
   public readonly get = asyncRoute(async (req, res) => {
     const q = parsePagination(req.query as Record<string, string | undefined>);
@@ -49,6 +54,25 @@ export class UserController {
     const id = req.params['id'] ?? '';
     await this.users.deleteAny(id);
     this.noContent(res);
+  });
+
+  public readonly listCarts = asyncRoute(async (_req, res) => {
+    const rows = await this.carts.listCartSummariesForAdmin();
+    this.ok(res, { entries: rows });
+  });
+
+  public readonly getUserCart = asyncRoute(async (req, res) => {
+    const id = req.params['id'] ?? '';
+    const row = await this.carts.getCartForUserAsAdmin(id);
+    this.ok(res, row);
+  });
+
+  public readonly postUserMessage = asyncRoute(async (req, res) => {
+    const adminId = this.userId(req);
+    const toUserId = req.params['id'] ?? '';
+    const { body } = parseAdminUserMessageBody(getJsonBody(req));
+    const row = await this.adminMessages.sendToUser(adminId, toUserId, body);
+    res.status(201).json(row);
   });
 
   private userId(req: { authUserId?: string }): string {

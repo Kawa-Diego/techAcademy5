@@ -1,3 +1,9 @@
+/* eslint-disable no-magic-numbers 
+This is a utility function to parse the pagination query parameters from the request.
+It clamps the page and pageSize values to the minimum and maximum values.
+It returns a PaginationQuery object with the page and pageSize values.
+*/
+
 import type { PaginationQuery } from '@ecommerce/shared';
 
 const clamp = (n: number, min: number, max: number): number => {
@@ -19,8 +25,11 @@ const asPageInt = (
 export const parsePagination = (query: {
   readonly page?: string;
   readonly pageSize?: string;
+  readonly q?: string;
 }): PaginationQuery => {
   const page = asPageInt(query.page, 1, 1_000_000);
   const pageSize = asPageInt(query.pageSize, 10, 100);
-  return { page, pageSize };
+  const raw = query.q?.trim() ?? '';
+  const search = raw.length > 0 ? raw.slice(0, 200) : undefined;
+  return { page, pageSize, search };
 };

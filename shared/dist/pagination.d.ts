@@ -11,4 +11,5 @@ export type PaginatedResult<T> = {
 export type PaginationQuery = {
     readonly page: number;
     readonly pageSize: number;
+    readonly search?: string;
 };
