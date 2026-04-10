@@ -1,0 +1,88 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  cpf          String     @unique
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  role         UserRole   @default(USER)
+  auditLogs    AuditLog[]
+  orders       Order[]
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Product {
+  id            String      @id @default(uuid())
+  name          String
+  description   String
+  priceCents    Int
+  model3dUrl    String
+  categoryId    String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  imageUrls     String[]    @default([])
+  stockQuantity Int         @default(10)
+  orderItems    OrderItem[]
+  category      Category    @relation(fields: [categoryId], references: [id])
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  status    String
+  notes     String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id                String    @id @default(uuid())
+  orderId           String
+  productId         String
+  quantity          Int
+  unitPriceCents    Int
+  refundConfirmedAt DateTime?
+  refundRequestedAt DateTime?
+  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product           Product   @relation(fields: [productId], references: [id])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String
+  details   Json?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
