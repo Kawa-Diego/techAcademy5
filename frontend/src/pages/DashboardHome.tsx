@@ -66,6 +66,11 @@ export const DashboardHome = (): ReactElement => {
             Edit profile
           </Link>
         </li>
+        <li>
+          <Link to="/user-carts" className={linkClass}>
+            User Carts
+          </Link>
+        </li>
       </ul>
     </div>
   );
