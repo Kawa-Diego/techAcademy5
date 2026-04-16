@@ -16,8 +16,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@ecommerce/shared": ["../shared/src/index.ts"],
-      "@ecommerce/shared/*": ["../shared/src/*"]
+      "@ecommerce/shared": ["../backend/src/shared/index.ts"],
+      "@ecommerce/shared/*": ["../backend/src/shared/*"]
     },
     "baseUrl": "."
   },

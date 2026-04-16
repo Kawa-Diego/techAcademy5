@@ -31,7 +31,7 @@ export default defineConfig({
     alias: [
       {
         find: '@ecommerce/shared',
-        replacement: path.resolve(__dirname, '../shared/dist'),
+        replacement: path.resolve(__dirname, 'src/shared/index.ts'),
       },
       {
         find: /^@prisma\/client$/,

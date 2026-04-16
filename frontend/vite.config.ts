@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@ecommerce/shared': path.resolve(__dirname, '../shared/src/index.ts'),
+      '@ecommerce/shared': path.resolve(__dirname, '../backend/src/shared/index.ts'),
     },
   },
   server: {

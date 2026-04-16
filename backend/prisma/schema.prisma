@@ -1,11 +1,10 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -19,6 +18,9 @@ model User {
   role         UserRole   @default(USER)
   auditLogs    AuditLog[]
   orders       Order[]
+  cart         Cart?
+  adminMessagesSent     AdminUserMessage[] @relation("AdminMessageFrom")
+  adminMessagesReceived AdminUserMessage[] @relation("AdminMessageTo")
 }
 
 model Category {
@@ -42,7 +44,44 @@ model Product {
   imageUrls     String[]    @default([])
   stockQuantity Int         @default(10)
   orderItems    OrderItem[]
+  cartItems     CartItem[]
   category      Category    @relation(fields: [categoryId], references: [id])
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  productId String
+  quantity  Int
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+}
+
+model AdminUserMessage {
+  id         String    @id @default(uuid())
+  fromUserId String
+  toUserId   String
+  body       String
+  readAt     DateTime?
+  createdAt  DateTime  @default(now())
+  fromUser   User      @relation("AdminMessageFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser     User      @relation("AdminMessageTo", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@index([toUserId])
+  @@index([createdAt])
 }
 
 model Order {

@@ -11,7 +11,9 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@prisma/client": ["./src/generated/prisma/client"]
+      "@prisma/client": ["./src/generated/prisma/client"],
+      "@ecommerce/shared": ["./src/shared/index.ts"],
+      "@ecommerce/shared/*": ["./src/shared/*"]
     }
   },
   "include": ["src/**/*"]
